@@ -4,14 +4,14 @@ public class Hierholzer {
     public static List<String> trouverCycleEulerien(Graphe graphe) {
         Eulerien e = new Eulerien();
 
-        // 1. Appel de la vérification (qui est maintenant dans la même classe)
+        // Appel de la vérification de si le graphe est eulérien de la classe Eulerien
         if (!e.verifierConditionEulerienne(graphe)) {
             // On retourne null ou une liste vide, ou on lance une exception selon ton choix
             System.err.println("Le graphe ne permet pas de cycle eulérien.");
             return new ArrayList<>();
         }
 
-        // 2. Création de la copie temporaire (Map d'adjacence)
+        // Création de la copie temporaire (Map d'adjacence)
         Map<String, List<String>> adjacenceTemp = new HashMap<>();
 
         for (Sommet s : graphe.get_Sommets()) {
@@ -56,4 +56,4 @@ public class Hierholzer {
         return cycle;
     }
 }
-}
+
