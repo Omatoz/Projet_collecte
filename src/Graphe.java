@@ -1,0 +1,94 @@
+import java.util.*;
+import java.io.*;
+
+public class Graphe {
+    private Map<String, Sommet> sommets = new HashMap<>();
+
+    public Graphe(String fichier_sommets, String fichier_aretes) throws FileNotFoundException {
+        charger_Sommets(fichier_sommets);
+        charger_Rues(fichier_aretes);
+    }
+
+    // methode : charge sommets graphe
+    private void charger_Sommets(String f1) throws FileNotFoundException {
+        File fichier = new File(f1); // crée objet du fichier
+
+        try (Scanner scanner = new Scanner(fichier)) { // on teste ouverture fichier
+
+            if (scanner.hasNextLine()) {
+                scanner.nextLine(); // lecture + ignore en-tête
+            }
+
+            while (scanner.hasNextLine()) { // tant qu'il y a une ligne à lire
+                String ligne = scanner.nextLine(); // lecture ligne
+                if (!ligne.trim().isEmpty()) { // verification ligne non vide
+                    ajouter_Sommet(ligne.trim()); // ajout nouveau sommet
+                }
+            }
+        }
+        System.out.println(this.get_Sommets().size() + " sommets chargés depuis " + f1);
+    }
+
+    // methode : charge rues graphes
+    private void charger_Rues(String nomFichier) throws FileNotFoundException {
+        File fichier = new File(nomFichier); // crée objet du fichier
+
+        try (Scanner scanner = new Scanner(fichier)) { // on teste ouverture fichier
+
+            if (scanner.hasNextLine()) {
+                scanner.nextLine(); // lecture + ignore en-tête
+            }
+
+            while (scanner.hasNextLine()) { // tant qu'il y a une ligne à lire
+                String ligne = scanner.nextLine(); // lecture ligne
+
+                if (!ligne.trim().isEmpty()) { // ignorer lignes vides
+                    String[] donnees = ligne.split(";"); // séparation données ligne par point-virgule
+
+                    if (donnees.length == 4) { // verification nombre de colonnes
+                        String source = donnees[0];
+                        String destination = donnees[1];
+                        int poids = Integer.parseInt(donnees[2]);
+                        Rues type = Rues.valueOf(donnees[3]);
+
+                        ajouter_Rues(source, destination, poids, type); // on crée les aretes
+                    }
+                }
+            }
+        }
+        System.out.println("Rues chargées depuis " + nomFichier);
+    }
+
+    public void ajouter_Sommet(String id) {
+        sommets.putIfAbsent(id, new Sommet(id));
+    }
+
+    //getters
+    public Sommet getSommet(String id) {
+        return sommets.get(id);
+    }
+    public Collection<Sommet> get_Sommets() {
+        return sommets.values();
+    }
+
+    public void ajouter_Rues(String depart, String arrivee, int poids, Rues type) {
+        Sommet source = getSommet(depart);
+        Sommet destination = getSommet(arrivee);
+
+        if (source == null || destination == null) {
+            System.err.println("Erreur !!! Source ou Destination inconnue !!!");
+            return;
+        }
+
+        switch (type) {
+            case DOUBLE_SENS_SIMPLE:
+            case DOUBLE_SENS_DEUX_PASSAGES:
+                source.ajouter_arete(destination, poids); // ajout arete des deux sens
+                destination.ajouter_arete(source, poids);
+                break;
+            case SENS_UNIQUE:
+                source.ajouter_arete(destination, poids);
+                break;
+        }
+    }
+}

@@ -1,0 +1,5 @@
+public enum Rues {
+    DOUBLE_SENS_SIMPLE,
+    SENS_UNIQUE,
+    DOUBLE_SENS_DEUX_PASSAGES,
+}
