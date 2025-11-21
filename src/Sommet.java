@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Sommet {
+public class  Sommet {
     public  String id;
     public List<Arete> aretes = new ArrayList<>();
 
