@@ -49,7 +49,7 @@ public class Graphe {
                         String source = donnees[0];
                         String destination = donnees[1];
                         int poids = Integer.parseInt(donnees[2]);
-                        Rues type = Rues.valueOf(donnees[3]);
+                        int type = Integer.parseInt(donnees[3]);
 
                         ajouter_Rues(source, destination, poids, type); // on crée les aretes
                     }
@@ -72,7 +72,7 @@ public class Graphe {
         return sommets.values();
     }
 
-    public void ajouter_Rues(String depart, String arrivee, int poids, Rues type) {
+    public void ajouter_Rues(String depart, String arrivee, int poids, int type) {
         Sommet source = getSommet(depart);
         Sommet destination = getSommet(arrivee);
 
@@ -83,11 +83,11 @@ public class Graphe {
 
         switch (type) {
             case 1:
-            case DOUBLE_SENS_DEUX_PASSAGES:
+            case 3:
                 source.ajouter_arete(destination, poids); // ajout arete des deux sens
                 destination.ajouter_arete(source, poids);
                 break;
-            case SENS_UNIQUE:
+            case 2:
                 source.ajouter_arete(destination, poids);
                 break;
         }
