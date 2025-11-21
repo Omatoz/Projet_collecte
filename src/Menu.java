@@ -14,7 +14,7 @@ public class Menu {
         // Boucle principale du programme. Elle continue tant que l'utilisateur ne choisit pas de quitter.
         while (true) {
             afficher_menu();
-            int theme = choix(1, 4);
+            int theme = options(1, 4);
 
             switch (theme) {
                 case 1:
@@ -55,7 +55,7 @@ public class Menu {
         System.out.println("  [2] Problématique 2 : Tournée des poubelles (Postier Chinois)");
         System.out.print("Saisir votre choix : ");
 
-        int problematique = choix(1, 2);
+        int problematique = options(1, 2);
 
         if (problematique == 1) {
             executer_p1();
@@ -65,7 +65,6 @@ public class Menu {
         attente();
     }
 
-
     private void executer_p1() {
         System.out.println("\nProblématique 1 : Tournée des encombrants (TSP)");
         System.out.println("Veuillez choisir une hypothèse de circulation :");
@@ -73,7 +72,7 @@ public class Menu {
         System.out.println("  [2] HO2 : Graphe orienté");
         System.out.println("  [3] HO3 : Graphe mixte");
         System.out.print("Saisir votre choix : ");
-        int hypothese = choix(1, 3);
+        int hypothese = options(1, 3);
 
         Graphe g = null;
         try {
@@ -89,51 +88,55 @@ public class Menu {
         List<Sommet> points_a_visiter = new ArrayList<>();
 
         while (true) {
-            System.out.println("\nDéfinition de la tournée");
-            System.out.println("Sommets disponibles sur la carte : " + g.get_Sommets());
+            System.out.println("\nTOURNEE");
+            System.out.println("Sommets disponibles : " + g.get_Sommets());
 
-            System.out.print("Veuillez entrer l'ID du sommet de départ (dépôt) : ");
-            String depot_Id = scanner.next().toUpperCase();
+            System.out.print("Veuillez saisir le sommet de départ (dépôt) : ");
+            String depot_Id = scanner.next();
             depot = g.getSommet(depot_Id);
 
             if (depot == null) {
-                System.out.println("!!! Erreur : Le sommet '" + depot_Id + "' n'existe pas. Veuillez réessayer. !!!");
-                scanner.nextLine(); // Nettoie la fin de ligne
-                continue;
-            }
-
-            System.out.println("Veuillez entrer les IDs des sommets à visiter (10 max), séparés par des espaces :");
-            scanner.nextLine();
-            String s = scanner.nextLine().toUpperCase();
-
-            String[] liste = s.split("\\s+");
-
-            boolean valide = true;
-            points_a_visiter.clear();
-
-            if (liste.length > 10) {
-                System.out.println("!!! Erreur !!! Vous ne pouvez pas entrer plus de 10 sommets. !!!");
-                valide = false;
+                System.out.println("!!! Erreur ::: Le sommet '" + depot_Id + "' n'existe pas. Veuillez réessayer. !!!");
+                scanner.nextLine(); // nettoie fin de ligne
             } else {
-                for (String id : liste) {
-                    if (id.isEmpty()) continue;
-                    Sommet sommet = g.getSommet(id);
-                    if (sommet == null) {
-                        System.out.println("!!! Erreur !!! Le sommet '" + id + "' n'existe pas. !!!");
-                        valide = false;
-                        break;
-                    } else if (sommet.equals(depot)) {
-                        System.out.println("Le dépôt '" + id + "' sera ignoré de la liste. !!!");
-                    } else {
-                        points_a_visiter.add(sommet);
+
+                System.out.println("Veuillez entrer les IDs des sommets à visiter (10 max), séparés par des espaces :");
+                scanner.nextLine();
+                String s = scanner.nextLine();
+
+                String[] liste = s.split(" ");
+
+                boolean valide = true;
+                Set<Sommet> doublons = new HashSet<>(); // pas de doublons !!!!
+
+                if (liste.length > 10) {
+                    System.out.println("!!! Erreur !!! Vous ne pouvez pas entrer plus de 10 sommets. !!!");
+                    valide = false;
+                } else {
+                    for (String id : liste) {
+                        if (!id.isEmpty()) {
+
+                            Sommet sommet = g.getSommet(id);
+                            if (sommet == null) {
+                                System.out.println("!!! Erreur !!! Le sommet '" + id + "' n'existe pas. !!!");
+                                valide = false;
+                                break;
+                            } else if (sommet.equals(depot)) {
+                                System.out.println("Le dépôt '" + id + "' sera ignoré de la liste. !!!");
+                            } else {
+                                if (!doublons.add(sommet)) {
+                                    System.out.println("!!! Avertissement !!! Le sommet '" + id + "' est un doublon et ne sera visité qu'une fois. !!!");
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            if (valide) {
-                break;
-            }
-            else {
-                System.out.println("Veuillez réessayer de définir la tournée.");
+                if (valide) {
+                    points_a_visiter.addAll(doublons);
+                    break;
+                } else {
+                    System.out.println("Veuillez réessayer de définir la tournée.");
+                }
             }
         }
 
@@ -152,7 +155,7 @@ public class Menu {
         }
     }
 
-    private int choix(int min, int max) {
+    private int options(int min, int max) {
         int choix = 0;
         while (true) {
             try {

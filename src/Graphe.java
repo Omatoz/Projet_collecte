@@ -60,13 +60,14 @@ public class Graphe {
     }
 
     public void ajouter_Sommet(String id) {
-        sommets.putIfAbsent(id, new Sommet(id));
+        sommets.putIfAbsent(id.toUpperCase(), new Sommet(id.toUpperCase()));
     }
 
     //getters
     public Sommet getSommet(String id) {
-        return sommets.get(id);
+        return sommets.get(id.toUpperCase());
     }
+
     public Collection<Sommet> get_Sommets() {
         return sommets.values();
     }
