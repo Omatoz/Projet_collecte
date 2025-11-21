@@ -31,7 +31,7 @@ public class Menu {
                     attente();
                     break;
                 case 4:
-                    System.out.println("Au revoir !!!");
+                    System.out.println("Au revoir :) !!!");
                     scanner.close(); // On ferme le scanner juste avant de quitter.
                     return; // Termine la méthode lancer() et donc le programme.
             }
@@ -60,7 +60,7 @@ public class Menu {
         if (problematique == 1) {
             executer_p1();
         } else {
-            System.out.println("\nProblématique 2 (Postier Chinois) non implémentée pour le moment.");
+            executer_p2();
         }
         attente();
     }
@@ -153,6 +153,73 @@ public class Menu {
             System.out.println("--> ÉCHEC : La tournée est irréalisable !!!");
             System.out.println("--> Tournée effectuée : " + resultat.getOrdre());
         }
+    }
+
+    private void executer_p2() {
+        System.out.println("\nPROBLÉMATIQUE 2 : Organiser la collecte des poubelles (Cycle Eulérien)");
+        System.out.println("L'objectif est de passer par toutes les rues une seule fois et revenir au départ.");
+
+        System.out.println("\nChoisissez le niveau de complexité :");
+        System.out.println("  [1] Cas Idéal : Graphe entièrement pair (Algorithme de Hierholzer)");
+        System.out.println("  [2] Cas Semi-Eulérien (2 sommets impairs) [À venir]");
+        System.out.println("  [3] Cas Général (Postier Chinois) [À venir]");
+        System.out.print("Votre choix : ");
+
+        // Pour l'instant, on bloque sur le choix 1 car c'est le seul codé
+        int choix = options(1, 1);
+
+        if (choix == 1) {
+            System.out.println("\n--- Chargement du Graphe de Test (Cas Idéal) ---");
+            System.out.println("Veuillez vous assurer que vos fichiers sont dans le dossier 'ressources/aretes_p2_c1_ho1'.");
+
+            // On demande les noms de fichiers pour te permettre de tester tes graphes "faits main"
+            System.out.print("Nom du fichier sommets  : ");
+            String f_sommets = "ressources/sommets.txt";
+
+            System.out.print("Nom du fichier arêtes : ");
+            String f_aretes = "ressources/aretes_p2_c1_ho1.txt";
+
+            Graphe g = null;
+            try {
+                g = new Graphe(f_sommets, f_aretes);
+                System.out.println("Graphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
+            } catch (Exception e) {
+                System.err.println("!!! Erreur de chargement : " + e.getMessage());
+                return; // On retourne au menu précédent
+            }
+
+            System.out.println("\n--- Vérification des conditions (Théorème d'Euler) ---");
+
+            // Appel à ta classe Eulerien (Statique)
+            if (Eulerien.verifierConditionEulerienne(g)) {
+                System.out.println("--> SUCCÈS : Le graphe est bien Eulérien (tous les sommets sont de degré pair).");
+                System.out.println("--> Lancement de l'algorithme de Hierholzer...");
+
+                try {
+                    // Appel à ta classe AlgoHierholzer
+                    List<String> cycle = Hierholzer.trouverCycleEulerien(g);
+
+                    System.out.println("\n[RÉSULTATS]");
+                    System.out.println("--> Tournée calculée avec succès !");
+                    System.out.println("--> Nombre de rues parcourues : " + (cycle.size() - 1));
+                    System.out.println("--> Itinéraire du camion :");
+
+                    // Affichage joli du chemin A -> B -> C -> A
+                    System.out.println(String.join(" -> ", cycle));
+
+                } catch (Exception e) {
+                    System.err.println("Une erreur est survenue pendant l'algorithme : " + e.getMessage());
+                    e.printStackTrace();
+                }
+
+            } else {
+                System.out.println("--> ÉCHEC : Le graphe chargé n'est pas un graphe Eulérien.");
+                System.out.println("    Raison : Certains sommets ont un nombre impair de rues.");
+                System.out.println("    Solution : Chargez un fichier différent pour le 'Cas Idéal' ou attendez l'implémentation du Cas 2.");
+            }
+        }
+
+        attente();
     }
 
     private int options(int min, int max) {
