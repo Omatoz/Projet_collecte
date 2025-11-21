@@ -82,7 +82,7 @@ public class Graphe {
         }
 
         switch (type) {
-            case DOUBLE_SENS_SIMPLE:
+            case 1:
             case DOUBLE_SENS_DEUX_PASSAGES:
                 source.ajouter_arete(destination, poids); // ajout arete des deux sens
                 destination.ajouter_arete(source, poids);
