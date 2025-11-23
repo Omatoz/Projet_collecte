@@ -6,6 +6,7 @@ public class Menu {
     private Scanner scanner; // On utilise un seul scanner pour toute l'application
 
     public Menu() {
+
         this.scanner = new Scanner(System.in);
     }
 
@@ -21,9 +22,7 @@ public class Menu {
                     choix_theme1();
                     break;
                 case 2:
-                    System.out.println("THÈME 2 : Optimiser les ramassages des points de collecte");
-                    System.out.println("Fonctionnalité non implémentée pour le moment.");
-                    attente();
+                    choix_theme2();
                     break;
                 case 3:
                     System.out.println("THÈME 3 : Planifier les jours de passage dans les quartiers");
@@ -45,7 +44,7 @@ public class Menu {
         System.out.println("  [2] Thème 2 : Optimiser les ramassages des points de collecte");
         System.out.println("  [3] Thème 3 : Planifier les jours de passage dans les quartiers");
         System.out.println("  [4] Quitter");
-        System.out.print("\nVotre choix : ");
+        System.out.print("Saisir votre choix : ");
     }
 
     private void choix_theme1() {
@@ -57,16 +56,37 @@ public class Menu {
 
         int problematique = options(1, 2);
 
+        System.out.print("\nTHÈME 1 : Ramassage aux pieds des habitations");
+
         if (problematique == 1) {
-            executer_p1();
+            executer_p1("PROBLÉMATIQUE 1 : Tournée des encombrants (TSP)");
         } else {
-            executer_p2();
+            executer_p2("PROBLÉMATIQUE 2 : Tournée des poubelles (Postier Chinois)");
         }
         attente();
     }
 
-    private void executer_p1() {
-        System.out.println("\nProblématique 1 : Tournée des encombrants (TSP)");
+    private void choix_theme2() {
+        System.out.println("\nTHÈME 2 : Optimiser les ramassages des points de collecte");
+        System.out.println("Veuillez choisir une méthode de résolution à tester :");
+        System.out.println("  [1] Approche 1 : Heuristique du Plus Proche Voisin");
+        System.out.println("  [2] Approche 2 : Heuristique de l'Arbre Couvrant Minimal (MST) [Non implémentée]");
+        System.out.print("Saisir votre choix : ");
+
+        int approche = options(1, 2);
+
+        System.out.print("\nTHÈME 2 : Optimiser les ramassages des points de collecte");
+
+        if (approche == 1) {
+            executer_p1("APPROCHE 1 : Heuristique du Plus Proche Voisin");
+        } else {
+            System.out.println("APPROCHE 2 Heuristique de l'Arbre Couvrant Minimal (MST)");
+        }
+        attente();
+    }
+
+    private void executer_p1(String titre) {
+        System.out.println("\n" + titre);
         System.out.println("Veuillez choisir une hypothèse de circulation :");
         System.out.println("  [1] HO1 : Graphe non-orienté");
         System.out.println("  [2] HO2 : Graphe orienté");
@@ -76,9 +96,9 @@ public class Menu {
 
         Graphe g = null;
         try {
-            String fichier_aretes = "ressources/aretes_ho" + hypothese + ".txt";
-            String fichier_sommets = "ressources/sommets.txt";
-            g = new Graphe(fichier_sommets, fichier_aretes);
+            String f_aretes = "ressources/aretes_ho" + hypothese + ".txt";
+            String f_sommets = "ressources/sommets.txt";
+            g = new Graphe(f_sommets, f_aretes);
         } catch (IOException | IllegalArgumentException e) {
             System.err.println("ERREUR !!! Impossible de construire la carte : " + e.getMessage());
             return;
@@ -155,71 +175,73 @@ public class Menu {
         }
     }
 
-    private void executer_p2() {
-        System.out.println("\nPROBLÉMATIQUE 2 : Organiser la collecte des poubelles (Cycle Eulérien)");
-        System.out.println("L'objectif est de passer par toutes les rues une seule fois et revenir au départ.");
-
-        System.out.println("\nChoisissez le niveau de complexité :");
+    private void executer_p2(String titre) {
+        System.out.println("\n" + titre);
+        System.out.println("Veuillez choisir un cas :");
         System.out.println("  [1] Cas Idéal : Graphe entièrement pair (Algorithme de Hierholzer)");
-        System.out.println("  [2] Cas Semi-Eulérien (2 sommets impairs) [À venir]");
-        System.out.println("  [3] Cas Général (Postier Chinois) [À venir]");
-        System.out.print("Votre choix : ");
+        System.out.println("  [2] Cas Semi-Eulérien : 2 sommets impairs");
+        System.out.println("  [3] Cas Général : Postier Chinois");
+        System.out.print("Saisir votre choix : ");
 
-        // Pour l'instant, on bloque sur le choix 1 car c'est le seul codé
-        int choix = options(1, 1);
+        int cas = options(1, 3);
 
-        if (choix == 1) {
-            System.out.println("\n--- Chargement du Graphe de Test (Cas Idéal) ---");
-            System.out.println("Veuillez vous assurer que vos fichiers sont dans le dossier 'ressources/aretes_p2_c1_ho1'.");
-
-            // On demande les noms de fichiers pour te permettre de tester tes graphes "faits main"
-            System.out.print("Nom du fichier sommets  : ");
-            String f_sommets = "ressources/sommets.txt";
-
-            System.out.print("Nom du fichier arêtes : ");
-            String f_aretes = "ressources/aretes_p2_c1_ho1.txt";
-
-            Graphe g = null;
-            try {
-                g = new Graphe(f_sommets, f_aretes);
-                System.out.println("Graphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
-            } catch (Exception e) {
-                System.err.println("!!! Erreur de chargement : " + e.getMessage());
-                return; // On retourne au menu précédent
-            }
-
-            System.out.println("\n--- Vérification des conditions (Théorème d'Euler) ---");
-
-            // Appel à ta classe Eulerien (Statique)
-            if (Eulerien.verifierConditionEulerienne(g)) {
-                System.out.println("--> SUCCÈS : Le graphe est bien Eulérien (tous les sommets sont de degré pair).");
-                System.out.println("--> Lancement de l'algorithme de Hierholzer...");
-
-                try {
-                    // Appel à ta classe AlgoHierholzer
-                    List<String> cycle = Hierholzer.trouverCycleEulerien(g);
-
-                    System.out.println("\n[RÉSULTATS]");
-                    System.out.println("--> Tournée calculée avec succès !");
-                    System.out.println("--> Nombre de rues parcourues : " + (cycle.size() - 1));
-                    System.out.println("--> Itinéraire du camion :");
-
-                    // Affichage joli du chemin A -> B -> C -> A
-                    System.out.println(String.join(" -> ", cycle));
-
-                } catch (Exception e) {
-                    System.err.println("Une erreur est survenue pendant l'algorithme : " + e.getMessage());
-                    e.printStackTrace();
-                }
-
-            } else {
-                System.out.println("--> ÉCHEC : Le graphe chargé n'est pas un graphe Eulérien.");
-                System.out.println("    Raison : Certains sommets ont un nombre impair de rues.");
-                System.out.println("    Solution : Chargez un fichier différent pour le 'Cas Idéal' ou attendez l'implémentation du Cas 2.");
-            }
+        System.out.println("\nPROBLÉMATIQUE 2 : Organiser la collecte des poubelles (Cycle Eulérien)");
+        if (cas == 1) {
+            System.out.println("CAS IDEAL : Graphe Pair");
+        } else if (cas == 2) {
+            System.out.println("CAS SEMI-EULERIEN : 2 Sommets Impairs");
+        } else if (cas == 3) {
+            System.out.println("CAS GENERAL : Postier Chinois");
         }
 
-        attente();
+        System.out.println("Veuillez choisir une hypothèse de circulation :");
+        System.out.println("  [1] HO1 : Graphe non-orienté");
+        System.out.println("  [2] HO2 : Graphe orienté");
+        System.out.println("  [3] HO3 : Graphe mixte");
+        System.out.print("Saisir votre choix : ");
+
+        int hypothese = options(1, 3);
+
+        String f_sommets = "ressources/sommets.txt";
+        String f_aretes = "ressources/aretes_p2_c" + cas + "_ho" + hypothese + ".txt";
+
+        Graphe g = null;
+        try {
+            g = new Graphe(f_sommets, f_aretes);
+            System.out.println("Graphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
+        } catch (Exception e) {
+            System.err.println("!!! Erreur de chargement : " + e.getMessage());
+            return; // On retourne au menu précédent
+        }
+
+        System.out.println("\n--- Vérification des conditions (Théorème d'Euler) ---");
+
+        // Appel à ta classe Eulerien (Statique)
+        if (Eulerien.verifierConditionEulerienne(g)) {
+            System.out.println("--> SUCCÈS : Le graphe est bien Eulérien (tous les sommets sont de degré pair).");
+            System.out.println("--> Lancement de l'algorithme de Hierholzer...");
+
+            try {
+                // Appel à ta classe AlgoHierholzer
+                List<String> cycle = Hierholzer.trouverCycleEulerien(g);
+                System.out.println("\n[RÉSULTATS]");
+                System.out.println("--> Tournée calculée avec succès !");
+                System.out.println("--> Nombre de rues parcourues : " + (cycle.size() - 1));
+                System.out.println("--> Itinéraire du camion :");
+
+                // Affichage joli du chemin A -> B -> C -> A
+                System.out.println(String.join(" -> ", cycle));
+
+            } catch (Exception e) {
+                System.err.println("Une erreur est survenue pendant l'algorithme : " + e.getMessage());
+                e.printStackTrace();
+            }
+
+        } else {
+            System.out.println("--> ÉCHEC : Le graphe chargé n'est pas un graphe Eulérien.");
+            System.out.println("    Raison : Certains sommets ont un nombre impair de rues.");
+            System.out.println("    Solution : Chargez un fichier différent pour le 'Cas Idéal' ou attendez l'implémentation du Cas 2.");
+        }
     }
 
     private int options(int min, int max) {
