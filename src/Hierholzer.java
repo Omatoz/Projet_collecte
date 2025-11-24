@@ -1,52 +1,44 @@
 import java.util.*;
-
 public class Hierholzer {
-    public static List<String> trouverCycleEulerien(Graphe graphe) {
-        Eulerien e = new Eulerien();
 
-        // Appel de la vérification de si le graphe est eulérien de la classe Eulerien
-        if (!e.verifierConditionEulerienne(graphe)) {
-            // On retourne null ou une liste vide, ou on lance une exception selon ton choix
-            System.err.println("Le graphe ne permet pas de cycle eulérien.");
-            return new ArrayList<>();
+    public static List<Sommet> trouverCycleEulerien(Graphe graphe, boolean estOriente) {
+        if (graphe == null || graphe.get_Sommets().isEmpty()) {
+            throw new RuntimeException("Le graphe est vide ou non initialisé.");
         }
 
         // Création de la copie temporaire (Map d'adjacence)
-        Map<String, List<String>> adjacenceTemp = new HashMap<>();
-
+        Map<Sommet, List<Sommet>> adjacenceTemp = new HashMap<>();
         for (Sommet s : graphe.get_Sommets()) {
-            List<String> voisins = new ArrayList<>();
+            List<Sommet> voisins = new ArrayList<>();
             for (Arete a : s.aretes) {
-                voisins.add(a.getDestination().id);
+                voisins.add(a.destination);
             }
-            adjacenceTemp.put(s.id, voisins);
+            adjacenceTemp.put(s, voisins);
         }
 
         // Initialisation
-        Stack<String> pile = new Stack<>();
-        List<String> cycle = new ArrayList<>();
-
-        if (adjacenceTemp.isEmpty()) return cycle;
-
-        String depart = adjacenceTemp.keySet().iterator().next();
+        Stack<Sommet> pile = new Stack<>();
+        List<Sommet> cycle = new ArrayList<>();
+        Sommet depart = graphe.get_Sommets().iterator().next();
         pile.push(depart);
 
         // Boucle principale
         while (!pile.isEmpty()) {
-            String u = pile.peek();
-            List<String> voisinsDeU = adjacenceTemp.get(u);
+            Sommet u = pile.peek();
+            List<Sommet> voisinsDeU = adjacenceTemp.get(u);
 
             if (voisinsDeU != null && !voisinsDeU.isEmpty()) {
-                String v = voisinsDeU.get(0);
-
-                // Suppression de l'arête (u, v) et (v, u)
-                voisinsDeU.remove(v);
-                List<String> voisinsDeV = adjacenceTemp.get(v);
-                if (voisinsDeV != null) {
-                    voisinsDeV.remove(u);
-                }
-
+                Sommet v = voisinsDeU.get(0);
                 pile.push(v);
+                voisinsDeU.remove(0); // Suppression de l'arête (u, v) et (v, u)
+
+                // On supprime l'arête inverse si le graphe est non orienté
+                if (!estOriente) {
+                    List<Sommet> voisinsDeV = adjacenceTemp.get(v);
+                    if (voisinsDeV != null) {
+                        voisinsDeV.remove(u);
+                    }
+                }
             } else {
                 cycle.add(pile.pop());
             }
@@ -55,5 +47,22 @@ public class Hierholzer {
         Collections.reverse(cycle);
         return cycle;
     }
-}
 
+    public static void lancer_Hierholzer(Graphe g, boolean estOriente) {
+        System.out.println("--> Lancement de l'algorithme de Hierholzer...");
+        try {
+            List<Sommet> cycle = Hierholzer.trouverCycleEulerien(g, estOriente);
+
+            System.out.println("\n[RÉSULTATS]");
+            System.out.println("--> Tournée calculée avec succès !");
+            System.out.println("--> Nombre de rues parcourues : " + (cycle.size() - 1));
+
+            StringJoiner sj = new StringJoiner(" -> ");
+            for(Sommet s : cycle) { sj.add(s.id); }
+            System.out.println("--> Itinéraire du camion : " + sj.toString());
+
+        } catch (Exception e) {
+            System.err.println("Une erreur est survenue pendant l'algorithme : " + e.getMessage());
+        }
+    }
+}

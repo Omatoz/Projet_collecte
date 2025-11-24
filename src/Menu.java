@@ -210,37 +210,34 @@ public class Menu {
             g = new Graphe(f_sommets, f_aretes);
             System.out.println("Graphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
         } catch (Exception e) {
-            System.err.println("!!! Erreur de chargement : " + e.getMessage());
+            System.err.println("!!! Erreur de chargement !!! " + e.getMessage());
             return; // On retourne au menu précédent
         }
 
-        System.out.println("\n--- Vérification des conditions (Théorème d'Euler) ---");
+        System.out.println("\nVérification des conditions (Théorème d'Euler)");
 
-        // Appel à ta classe Eulerien (Statique)
-        if (Eulerien.verifierConditionEulerienne(g)) {
-            System.out.println("--> SUCCÈS : Le graphe est bien Eulérien (tous les sommets sont de degré pair).");
-            System.out.println("--> Lancement de l'algorithme de Hierholzer...");
+        boolean eulerien = false;
 
-            try {
-                // Appel à ta classe AlgoHierholzer
-                List<String> cycle = Hierholzer.trouverCycleEulerien(g);
-                System.out.println("\n[RÉSULTATS]");
-                System.out.println("--> Tournée calculée avec succès !");
-                System.out.println("--> Nombre de rues parcourues : " + (cycle.size() - 1));
-                System.out.println("--> Itinéraire du camion :");
+        if (hypothese == 1) {
+            eulerien = Eulerien.Eulerien_non_oriente(g);
+        } else { // Cas pour HO2 et HO3 : graphes orientés
+            eulerien = Eulerien.Eulerien_oriente(g);
+        }
 
-                // Affichage joli du chemin A -> B -> C -> A
-                System.out.println(String.join(" -> ", cycle));
-
-            } catch (Exception e) {
-                System.err.println("Une erreur est survenue pendant l'algorithme : " + e.getMessage());
-                e.printStackTrace();
+        // Appel classe Eulerien
+        if (eulerien) {
+            if (hypothese == 1) {
+                System.out.println("--> SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
+            } else {
+                System.out.println("--> SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré equilibrés)");
             }
 
+            // On indique à Hierholzer s'il doit traiter le graphe comme orienté ou non
+            boolean oriente = (hypothese != 1);
+            Hierholzer.lancer_Hierholzer(g, oriente);
+
         } else {
-            System.out.println("--> ÉCHEC : Le graphe chargé n'est pas un graphe Eulérien.");
-            System.out.println("    Raison : Certains sommets ont un nombre impair de rues.");
-            System.out.println("    Solution : Chargez un fichier différent pour le 'Cas Idéal' ou attendez l'implémentation du Cas 2.");
+            System.out.println("--> ÉCHEC : Le graphe chargé ne respecte pas les conditions eulériennes pour l'hypothèse choisie");
         }
     }
 
