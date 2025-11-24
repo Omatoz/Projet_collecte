@@ -83,12 +83,12 @@ public class Graphe {
         }
 
         switch (type) {
-            case 1: // une voie deux sens
-            case 3: // Double voies differentes
+            case 1: // une voie deux sens (orienté)
+            case 3: // Double voies differentes  (2 orientés)
                 source.ajouter_arete(destination, poids); // ajout arete des deux sens
                 destination.ajouter_arete(source, poids);
                 break;
-            case 2: // sens unique
+            case 2: // sens unique  (orienté)
                 source.ajouter_arete(destination, poids);
                 break;
         }
