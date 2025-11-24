@@ -4,6 +4,7 @@ import java.io.*;
 public class Graphe {
     private Map<String, Sommet> sommets = new HashMap<>();
 
+    // constructeur
     public Graphe(String fichier_sommets, String fichier_aretes) throws FileNotFoundException {
         charger_Sommets(fichier_sommets);
         charger_Rues(fichier_aretes);

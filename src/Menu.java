@@ -211,7 +211,7 @@ public class Menu {
             System.out.println("Graphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
         } catch (Exception e) {
             System.err.println("!!! Erreur de chargement !!! " + e.getMessage());
-            return; // On retourne au menu précédent
+            return;
         }
 
         System.out.println("\nVérification des conditions (Théorème d'Euler)");

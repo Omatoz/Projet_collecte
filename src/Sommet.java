@@ -4,6 +4,7 @@ public class  Sommet {
     public  String id;
     public List<Arete> aretes = new ArrayList<>();
 
+    // constructeur
     public Sommet(String id) {
         this.id = id;
     }

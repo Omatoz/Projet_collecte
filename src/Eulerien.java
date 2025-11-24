@@ -1,5 +1,4 @@
 import java.util.*;
-
 public class Eulerien {
     // Vérification du graphe : eulérien ou pas
     public static boolean Eulerien_non_oriente(Graphe g) {
