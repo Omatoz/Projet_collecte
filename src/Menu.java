@@ -216,13 +216,11 @@ public class Menu {
 
         System.out.println("\nVérification des conditions (Théorème d'Euler)");
 
-        boolean eulerien = false;
-
         if (hypothese == 1) {
             List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
             if (cas == 1) {
                 if (sommetsImpairs.isEmpty()) {
-                    System.out.println("SUCCÈS. Le graphe est bien eulérien.");
+                    System.out.println("SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
                     Hierholzer.lancer_cas1(g, false);
                 } else {
                     System.out.println("ÉCHEC. Le fichier chargé ne correspond pas à un graphe eulérien.");
@@ -236,26 +234,19 @@ public class Menu {
                     System.out.println("ÉCHEC. Le fichier chargé n'a pas exactement 2 sommets impairs.");
                     System.out.println("Nombre de sommets impairs trouvés : " + sommetsImpairs.size());
                 }
+            } else if (cas == 3) {
+                System.out.println("NON IMPLEMENTE");
             }
-        } else {
-            System.out.println("La logique pour les graphes orientés/mixtes n'est pas implémentée pour cette problématique.");
-        }
+        } else if ((hypothese == 2) || (hypothese == 3) ) {
+            List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
 
-
-        // Appel classe Eulerien
-        if (eulerien) {
-            if (hypothese == 1) {
-                System.out.println("--> SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
+            if (sommets_non_equilibres.isEmpty()) {
+                System.out.println("SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
+                Hierholzer.lancer_cas1(g, true);
             } else {
-                System.out.println("--> SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré equilibrés)");
+                System.out.println("ÉCHEC. Le fichier chargé ne correspond pas à un graphe eulérien.");
+                System.out.println("Sommets impairs trouvés : " + sommets_non_equilibres);
             }
-
-            // On indique à Hierholzer s'il doit traiter le graphe comme orienté ou non
-            boolean oriente = (hypothese != 1);
-            Hierholzer.lancer_cas1(g, oriente);
-
-        } else {
-            System.out.println("--> ÉCHEC : Le graphe chargé ne respecte pas les conditions eulériennes pour l'hypothèse choisie");
         }
     }
 

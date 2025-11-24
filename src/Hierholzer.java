@@ -88,7 +88,7 @@ public class Hierholzer {
                     break;
                 }
             }
-            grapheRepare.ajouter_Rues(s1.id, s2.id, poids, Rues.DOUBLE_SENS_SIMPLE); // On duplique
+            grapheRepare.ajouter_Rues(s1.id, s2.id, poids, 1); // On duplique
         }
 
         System.out.println("--> Le graphe est maintenant eulérien. Lancement de Hierholzer...");
