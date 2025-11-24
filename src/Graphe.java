@@ -10,6 +10,22 @@ public class Graphe {
         charger_Rues(fichier_aretes);
     }
 
+    // constructeur copie
+    public Graphe(Graphe autre) {
+        // Copie des sommets
+        for (Sommet s : autre.get_Sommets()) {
+            this.ajouter_Sommet(s.id);
+        }
+        // Copie des arêtes
+        for (Sommet s : autre.get_Sommets()) {
+            Sommet sourceCopie = this.getSommet(s.id);
+            for (Arete a : s.aretes) {
+                Sommet destCopie = this.getSommet(a.destination.id);
+                sourceCopie.ajouter_arete(destCopie, a.poids);
+            }
+        }
+    }
+
     // methode : charge sommets graphe
     private void charger_Sommets(String f1) throws FileNotFoundException {
         File fichier = new File(f1); // crée objet du fichier

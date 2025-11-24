@@ -219,10 +219,28 @@ public class Menu {
         boolean eulerien = false;
 
         if (hypothese == 1) {
-            eulerien = Eulerien.Eulerien_non_oriente(g);
-        } else { // Cas pour HO2 et HO3 : graphes orientés
-            eulerien = Eulerien.Eulerien_oriente(g);
+            List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
+            if (cas == 1) {
+                if (sommetsImpairs.isEmpty()) {
+                    System.out.println("SUCCÈS. Le graphe est bien eulérien.");
+                    Hierholzer.lancer_cas1(g, false);
+                } else {
+                    System.out.println("ÉCHEC. Le fichier chargé ne correspond pas à un graphe eulérien.");
+                    System.out.println("Sommets impairs trouvés : " + sommetsImpairs);
+                }
+            } else if (cas == 2) {
+                if (sommetsImpairs.size() == 2) {
+                    System.out.println("SUCCÈS. Le graphe contient bien 2 sommets impairs : " + sommetsImpairs);
+                    Hierholzer.lancer_cas2(g, g.getSommet("A"), sommetsImpairs); // On suppose que le dépôt est A
+                } else {
+                    System.out.println("ÉCHEC. Le fichier chargé n'a pas exactement 2 sommets impairs.");
+                    System.out.println("Nombre de sommets impairs trouvés : " + sommetsImpairs.size());
+                }
+            }
+        } else {
+            System.out.println("La logique pour les graphes orientés/mixtes n'est pas implémentée pour cette problématique.");
         }
+
 
         // Appel classe Eulerien
         if (eulerien) {
@@ -234,7 +252,7 @@ public class Menu {
 
             // On indique à Hierholzer s'il doit traiter le graphe comme orienté ou non
             boolean oriente = (hypothese != 1);
-            Hierholzer.lancer_Hierholzer(g, oriente);
+            Hierholzer.lancer_cas1(g, oriente);
 
         } else {
             System.out.println("--> ÉCHEC : Le graphe chargé ne respecte pas les conditions eulériennes pour l'hypothèse choisie");

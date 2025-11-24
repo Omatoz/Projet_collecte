@@ -1,43 +1,33 @@
 import java.util.*;
 public class Eulerien {
     // Vérification du graphe : eulérien ou pas
-    public static boolean Eulerien_non_oriente(Graphe g) {
-        // On récupère la collection de sommets depuis l'objet Graphe
-        for (Sommet s : g.
-                get_Sommets()) {
-            // On regarde le degré de chaque sommet
+    public static List<Sommet> Eulerien_non_oriente(Graphe g) {
+        List<Sommet> impairs = new ArrayList<>();
+        for (Sommet s : g.get_Sommets()) {
             if (s.aretes.size() % 2 != 0) {
-                System.out.println("Condition Euler non respectée : Le sommet " + s.id
-                        + " est de degré impair (" + s.aretes.size() + ").");
-                return false;
+                impairs.add(s);
             }
         }
-        return true;
+        return impairs;
     }
 
-    public static boolean Eulerien_oriente(Graphe g) {
-        Map<Sommet, Integer> degre_entrant = new HashMap<>();
-
+    public static List<Sommet> Eulerien_oriente(Graphe g) {
+        List<Sommet> sommets_non_equilibres = new ArrayList<>();
+        Map<Sommet, Integer> degre_Entrant = new HashMap<>();
         for (Sommet s : g.get_Sommets()) {
-            degre_entrant.put(s, 0);
+            degre_Entrant.put(s, 0);
         }
-
         for (Sommet s : g.get_Sommets()) {
             for (Arete a : s.aretes) {
                 Sommet destination = a.destination;
-                degre_entrant.put(destination, degre_entrant.get(destination) + 1);
+                degre_Entrant.put(destination, degre_Entrant.get(destination) + 1);
             }
         }
-
         for (Sommet s : g.get_Sommets()) {
-            int sortant = s.aretes.size();
-            int entrant = degre_entrant.get(s);
-            if (entrant != sortant) {
-                System.out.println("Condition Euler non respectée : ÉCHEC. Le sommet " + s.id
-                        + " n'est pas équilibré (entrant: " + entrant + ", sortant: " + sortant + ").");
-                return false;
+            if (s.aretes.size() != degre_Entrant.get(s)) {
+                sommets_non_equilibres.add(s);
             }
         }
-        return true;
+        return sommets_non_equilibres;
     }
 }
