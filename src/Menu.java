@@ -235,13 +235,14 @@ public class Menu {
             } else if (cas == 2) {
                 if (sommetsImpairs.size() == 2) {
                     System.out.println("SUCCÈS. Le graphe contient bien 2 sommets impairs : " + sommetsImpairs);
-                    Hierholzer.lancer_cas2(g, g.getSommet("A"), sommetsImpairs); // On suppose que le dépôt est A
+                    Hierholzer.lancer_cas2(g, g.getSommet("A"), sommetsImpairs);
                 } else {
                     System.out.println("ÉCHEC. Le fichier chargé n'a pas exactement 2 sommets impairs.");
                     System.out.println("Nombre de sommets impairs trouvés : " + sommetsImpairs.size());
                 }
             } else if (cas == 3) {
-                System.out.println("NON IMPLEMENTE");
+                System.out.println("SUCCÈS. Le graphe contient bien 2 sommets impairs : " + sommetsImpairs);
+                Postier.lancer(g);
             }
         } else if ((hypothese == 2) || (hypothese == 3) ) {
             List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
