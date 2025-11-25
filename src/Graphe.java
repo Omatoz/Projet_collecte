@@ -109,4 +109,46 @@ public class Graphe {
                 break;
         }
     }
+
+
+
+    // stockage en mémoire vive (matrice d'adjacence)
+    /*public void afficherGraphe(){
+        List<String> listeSommets = new ArrayList<>(sommets.keySet());
+        Collections.sort(listeSommets);
+
+        int ordre = listeSommets.size();
+        int infini=999;
+
+        int[][] matriceAdjacence = new int[ordre][ordre];
+
+        for (int i = 0; i < ordre; i++) {
+            Sommet sommet = sommets.get(listeSommets.get(i));
+            for(Arete a : sommet.aretes) {
+                int j = listeSommets.indexOf(a.destination.id);
+                matriceAdjacence[i][j] = a.poids;
+            }
+        }
+
+        System.out.println("Matrice d'adjacence du graphe: ");
+        System.out.println("         ");
+
+        for (String id : listeSommets){
+            System.out.println(id);
+        }
+
+        for(int i=0;i<ordre;i++){
+            for(int j=0;j<ordre;j++){
+                if(matriceAdjacence[i][j]==infini){
+                    System.out.println("∞ ");
+                }else{
+                    System.out.println(matriceAdjacence[i][j]);
+                }
+            }
+        }
+    }
+     */
 }
+
+
+
