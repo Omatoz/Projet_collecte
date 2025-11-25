@@ -203,7 +203,12 @@ public class Menu {
         int hypothese = options(1, 3);
 
         String f_sommets = "ressources/sommets.txt";
-        String f_aretes = "ressources/aretes_p2_c" + cas + "_ho" + hypothese + ".txt";
+
+        if (cas == 1 || cas == 2){
+            String f_aretes = "ressources/aretes_p2_c" + cas + "_ho" + hypothese + ".txt";
+        } else{
+            String f_aretes = "ressources/aretes_ho" + hypothese + ".txt";
+        }
 
         Graphe g = null;
         try {
