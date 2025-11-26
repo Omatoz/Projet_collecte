@@ -48,7 +48,7 @@ public class Hierholzer {
         return cycle;
     }
 
-    public static void lancer_cas1(Graphe g, boolean estOriente) {
+    public static void cycle(Graphe g, boolean estOriente) {
         System.out.println("--> Lancement de l'algorithme de Hierholzer...");
         try {
             List<Sommet> cycle = Hierholzer.trouverCycleEulerien(g, estOriente);
@@ -66,7 +66,7 @@ public class Hierholzer {
         }
     }
 
-    public static void lancer_cas2(Graphe g, Sommet depot, List<Sommet> sommetsImpairs) {
+    public static void chemin(Graphe g, Sommet depot, List<Sommet> sommetsImpairs) {
         Sommet u = sommetsImpairs.get(0);
         Sommet v = sommetsImpairs.get(1);
 
@@ -90,33 +90,6 @@ public class Hierholzer {
             }
             grapheRepare.ajouter_Rues(s1.id, s2.id, poids, 1); // On duplique
         }
-
-        System.out.println("--> Le graphe est maintenant eulérien. Lancement de Hierholzer...");
-        try {
-            // On lance Hierholzer sur le graphe réparé.
-            List<Sommet> cycle = trouverCycleEulerien(grapheRepare, false); // false car HO1
-
-            System.out.println("\n[RÉSULTATS]");
-            System.out.println("--> Tournée calculée avec succès !");
-
-            // Calcul de la distance totale
-            int distanceTotale = 0;
-            for(Sommet s : g.get_Sommets()) {
-                for(Arete a : s.aretes) {
-                    distanceTotale += a.poids;
-                }
-            }
-            distanceTotale = distanceTotale / 2; // Car chaque arête est comptée deux fois
-            distanceTotale += cheminReparation.getDistance(); // On ajoute le coût de la réparation
-
-            StringJoiner sj = new StringJoiner(" -> ");
-            for(Sommet s : cycle) { sj.add(s.id); }
-
-            System.out.println("--> Distance totale (incluant les rues reparcourues) : " + distanceTotale);
-            System.out.println("--> Itinéraire du camion : " + sj.toString());
-
-        } catch (Exception e) {
-            System.err.println("Une erreur est survenue pendant l'algorithme : " + e.getMessage());
-        }
+        cycle(grapheRepare, false);
     }
 }

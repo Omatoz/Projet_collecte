@@ -53,7 +53,7 @@ public class Postier {
 
         // --- ÉTAPE 5 : LANCER HIERHOLZER SUR LE GRAPHE RÉPARÉ ---
         System.out.println("--> Le graphe est maintenant eulérien. Lancement de Hierholzer...");
-        Hierholzer.lancer_cas1(grapheRepare, false); // false = non orienté
+        Hierholzer.cycle(grapheRepare, false); // false = non orienté
 
         // Calcul de la distance totale
         int distanceOriginale = 0;

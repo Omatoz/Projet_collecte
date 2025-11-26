@@ -227,7 +227,7 @@ public class Menu {
             if (cas == 1) {
                 if (sommetsImpairs.isEmpty()) {
                     System.out.println("SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
-                    Hierholzer.lancer_cas1(g, false);
+                    Hierholzer.cycle(g, false);
                 } else {
                     System.out.println("ÉCHEC. Le fichier chargé ne correspond pas à un graphe eulérien.");
                     System.out.println("Sommets impairs trouvés : " + sommetsImpairs);
@@ -235,21 +235,26 @@ public class Menu {
             } else if (cas == 2) {
                 if (sommetsImpairs.size() == 2) {
                     System.out.println("SUCCÈS. Le graphe contient bien 2 sommets impairs : " + sommetsImpairs);
-                    Hierholzer.lancer_cas2(g, g.getSommet("A"), sommetsImpairs);
+                    Hierholzer.chemin(g, g.getSommet("A"), sommetsImpairs);
                 } else {
                     System.out.println("ÉCHEC. Le fichier chargé n'a pas exactement 2 sommets impairs.");
                     System.out.println("Nombre de sommets impairs trouvés : " + sommetsImpairs.size());
                 }
             } else if (cas == 3) {
-                System.out.println("SUCCÈS. Le graphe contient bien 2 sommets impairs : " + sommetsImpairs);
-                Postier.lancer(g);
+                if (sommetsImpairs.size() > 2) {
+                    System.out.println("SUCCÈS. Le graphe contient bien 2 sommets impairs : " + sommetsImpairs);
+                    Postier.lancer(g);
+                } else {
+                    System.out.println("ÉCHEC. Le fichier chargé n'a pas exactement 2 sommets impairs.");
+                    System.out.println("Nombre de sommets impairs trouvés : " + sommetsImpairs.size());
+                }
             }
         } else if ((hypothese == 2) || (hypothese == 3) ) {
             List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
 
             if (sommets_non_equilibres.isEmpty()) {
                 System.out.println("SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
-                Hierholzer.lancer_cas1(g, true);
+                Hierholzer.cycle(g, true);
             } else {
                 System.out.println("ÉCHEC. Le fichier chargé ne correspond pas à un graphe eulérien.");
                 System.out.println("Sommets impairs trouvés : " + sommets_non_equilibres);
