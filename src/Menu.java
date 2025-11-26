@@ -245,15 +245,15 @@ public class Menu {
                     Postier.lancer(g);
             }
 
-        } else if ((hypothese == 2) || (hypothese == 3) ) {
+        } else if ((hypothese == 2) || (hypothese == 3)) {
             List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
 
             if (sommets_non_equilibres.isEmpty()) {
                 System.out.println("SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
                 Hierholzer.cycle(g, true);
             } else {
-                System.out.println("ÉCHEC. Le fichier chargé ne correspond pas à un graphe eulérien.");
-                System.out.println("Sommets impairs trouvés : " + sommets_non_equilibres);
+                    System.out.println("--> DIAGNOSTIC (HO2/HO3) : Le graphe n'est pas Eulérien.");
+                    Postier.lancer(g);
             }
         }
     }
