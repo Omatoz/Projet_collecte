@@ -110,8 +110,6 @@ public class Graphe {
         }
     }
 
-
-
     // stockage en mémoire vive (matrice d'adjacence)
     /*public void afficherGraphe(){
         List<String> listeSommets = new ArrayList<>(sommets.keySet());
@@ -149,6 +147,5 @@ public class Graphe {
     }
      */
 }
-
 
 

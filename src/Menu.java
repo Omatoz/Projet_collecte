@@ -104,24 +104,23 @@ public class Menu {
             return;
         }
 
-        Sommet depot;
+        Sommet depot = g.getSommet("A");
+        if (depot == null) {
+            System.err.println("!!! ERREUR CRITIQUE : Le sommet de dépôt 'A' n'a pas été trouvé dans le graphe.");
+            return;
+        }
+
         List<Sommet> points_a_visiter = new ArrayList<>();
 
         while (true) {
             System.out.println("\nTOURNEE");
             System.out.println("Sommets disponibles : " + g.get_Sommets());
 
-            System.out.print("Veuillez saisir le sommet de départ (dépôt) : ");
-            String depot_Id = scanner.next();
-            depot = g.getSommet("A");
-
             if (depot == null) {
-                System.out.println("!!! Erreur ::: Le sommet '" + depot_Id + "' n'existe pas. Veuillez réessayer. !!!");
+                System.out.println("!!! Erreur ::: Le sommet 'A' n'existe pas. Veuillez réessayer. !!!");
                 scanner.nextLine(); // nettoie fin de ligne
             } else {
-
-                System.out.println("Veuillez entrer les IDs des sommets à visiter (10 max), séparés par des espaces :");
-                scanner.nextLine();
+                System.out.println("Saisir les sommets à visiter (10 max), séparés par des espaces :");
                 String s = scanner.nextLine();
 
                 String[] liste = s.split(" ");
@@ -135,7 +134,6 @@ public class Menu {
                 } else {
                     for (String id : liste) {
                         if (!id.isEmpty()) {
-
                             Sommet sommet = g.getSommet(id);
                             if (sommet == null) {
                                 System.out.println("!!! Erreur !!! Le sommet '" + id + "' n'existe pas. !!!");
@@ -220,8 +218,6 @@ public class Menu {
             return;
         }
 
-        System.out.println("\nVérification des conditions (Théorème d'Euler)");
-
         if (hypothese == 1) {
             List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
             if (cas == 1) {
@@ -241,19 +237,18 @@ public class Menu {
                     System.out.println("Nombre de sommets impairs trouvés : " + sommetsImpairs.size());
                 }
             } else if (cas == 3) {
-                    System.out.println("SUCCÈS CAS 3. Le graphe est Eulérien");
-                    Postier.lancer(g);
+                System.out.println("SUCCÈS CAS 3. Le graphe est Eulérien");
+                Postier.lancer(g);
             }
-
         } else if ((hypothese == 2) || (hypothese == 3)) {
             List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
 
             if (sommets_non_equilibres.isEmpty()) {
-                System.out.println("SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
+                System.out.println("SUCCÈS CAS 1 : Le graphe est Eulérien (tous les sommets sont de degré pair)");
                 Hierholzer.cycle(g, true);
             } else {
-                    System.out.println("--> DIAGNOSTIC (HO2/HO3) : Le graphe n'est pas Eulérien.");
-                    Postier.lancer(g);
+                System.out.println("Le graphe n'est pas Eulérien.");
+                Postier.lancer(g);
             }
         }
     }

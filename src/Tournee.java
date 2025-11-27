@@ -33,6 +33,11 @@ public class Tournee {
 
     // calcul de la tournée
     public static TSP calculer_tournee(Graphe graphe, Sommet depot, List<Sommet> a_visiter) {
+        if (a_visiter == null || a_visiter.isEmpty()) {
+            System.out.println("Avertissement : Aucun point à visiter n'a été fourni. La tournée est Dépôt -> Dépôt.");
+            List<Sommet> ordreSimple = List.of(depot, depot);
+            return new TSP(ordreSimple, 0, new ArrayList<>(List.of(depot)), true);
+        }
         System.out.println("\n[PHASE 1] : DIJKSTRA\n");
         List<Sommet> points = new ArrayList<>(a_visiter); // On liste les dépots et adresses (points)
         points.add(0, depot); // ajout depot
