@@ -113,7 +113,7 @@ public class Menu {
 
             System.out.print("Veuillez saisir le sommet de départ (dépôt) : ");
             String depot_Id = scanner.next();
-            depot = g.getSommet(depot_Id);
+            depot = g.getSommet("A");
 
             if (depot == null) {
                 System.out.println("!!! Erreur ::: Le sommet '" + depot_Id + "' n'existe pas. Veuillez réessayer. !!!");
