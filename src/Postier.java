@@ -42,8 +42,6 @@ public class Postier {
         System.out.println("--> Distance totale de la tournée : " + (distanceOriginale + coutReparation));
     }
 
-    // ================== Les méthodes ci-dessous sont des "assistants" plus simples ==================
-
     private static Map<Sommet, Integer> calculerDifferencesDegres(Graphe g) {
         Map<Sommet, Integer> differences = new HashMap<>();
         for (Sommet s : g.get_Sommets()) {
