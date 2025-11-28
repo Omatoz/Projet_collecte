@@ -240,15 +240,28 @@ public class Menu {
                 System.out.println("Le graphe n'est pas Eulérien");
                 Postier.lancer(g, hypothese);
             }
-        } else if ((hypothese == 2) || (hypothese == 3)) {
+        } else if (hypothese == 2) {
             List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
-
             if (sommets_non_equilibres.isEmpty()) {
                 System.out.println("SUCCÈS : Le graphe est Eulérien.");
                 Hierholzer.cycle(g, true);
             } else {
                 System.out.println("Le graphe n'est pas Eulérien.");
                 Postier.lancer(g, hypothese);
+            }
+        } else if (hypothese == 3) {
+            List<Sommet> sommetsProblemeMixtes = Eulerien.trouverSommetsImpairsMixtes(g);
+            int nbProblemes = sommetsProblemeMixtes.size();
+            System.out.println("DIAGNOSTIC (HO3 - Mixte): " + nbProblemes + " sommet(s) à problème trouvé(s).");
+
+            if (nbProblemes == 0) {
+                System.out.println("Le graphe mixte est Eulérien.");
+                System.out.println("L'algorithme de Hierholzer pour graphe mixte n'est pas implémenté.");
+                // Hierholzer.lancerPourGrapheMixte(g); // Appel futur
+            } else {
+                System.out.println("    Le graphe mixte n'est pas Eulérien. Sommets à problème : " + sommetsProblemeMixtes);
+                System.out.println("    La résolution pour le Postier Chinois Mixte n'est pas implémentée.");
+                PostierMixte.lancer(g); // Appel futur
             }
         }
     }

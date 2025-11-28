@@ -30,4 +30,53 @@ public class Eulerien {
         }
         return sommets_non_equilibres;
     }
+
+    public static List<Sommet> trouverSommetsImpairsMixtes(Graphe g) {
+        List<Sommet> sommetsProbleme = new ArrayList<>();
+
+        for (Sommet s : g.get_Sommets()) {
+
+            // --- PARTIE 1 : ANALYSE DES RUES "FLEXIBLES" (TYPE 1) ---
+            int degreNonOriente = 0;
+            for (Arete a : s.aretes) {
+                if (a.type == 1) {
+                    degreNonOriente++;
+                }
+            }
+            // Le nombre de rues de type 1 connectées à 's' doit être pair.
+            boolean estPairNonOriente = (degreNonOriente % 2 == 0);
+
+            // --- PARTIE 2 : ANALYSE DES RUES "RIGIDES" (TYPE 2 et 3) ---
+            int degreSortantOriente = 0;
+            for (Arete a : s.aretes) {
+                if (a.type == 2 || a.type == 3) {
+                    degreSortantOriente++;
+                }
+            }
+
+            int degreEntrantOriente = 0;
+            for (Sommet autre : g.get_Sommets()) {
+                for (Arete a : autre.aretes) {
+                    if (a.destination.equals(s) && (a.type == 2 || a.type == 3)) {
+                        degreEntrantOriente++;
+                    }
+                }
+            }
+            // Le nombre d'entrées et de sorties rigides doit être égal.
+            boolean estEquilibreOriente = (degreSortantOriente == degreEntrantOriente);
+
+            // --- CONCLUSION POUR LE SOMMET 's' ---
+            // Le sommet est à problème s'il ne respecte pas L'UNE des deux conditions.
+            if (!estPairNonOriente || !estEquilibreOriente) {
+                sommetsProbleme.add(s);
+                // On peut ajouter un message de debug pour comprendre pourquoi
+                System.out.println("DEBUG: Sommet " + s.id + " à problème. " +
+                        "Équilibre Orienté: " + estEquilibreOriente +
+                        " (Entrant: " + degreEntrantOriente + ", Sortant: " + degreSortantOriente + "). " +
+                        "Parité Non-Orienté: " + estPairNonOriente +
+                        " (Degré: " + degreNonOriente + ").");
+            }
+        }
+        return sommetsProbleme;
+    }
 }
