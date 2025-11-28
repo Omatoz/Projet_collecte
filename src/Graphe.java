@@ -47,33 +47,37 @@ public class Graphe {
     }
 
     // methode : charge rues graphes
+    // Dans Graphe.java
     private void charger_Rues(String nomFichier) throws FileNotFoundException {
-        File fichier = new File(nomFichier); // crée objet du fichier
+        File f = new File(nomFichier);
+        System.out.println(">>> LECTURE DU FICHIER : " + f.getAbsolutePath()); // VÉRIFIEZ CE CHEMIN !
 
-        try (Scanner scanner = new Scanner(fichier)) { // on teste ouverture fichier
+        try (Scanner scanner = new Scanner(f)) {
+            if (scanner.hasNextLine()) scanner.nextLine();
 
-            if (scanner.hasNextLine()) {
-                scanner.nextLine(); // lecture + ignore en-tête
-            }
+            while (scanner.hasNextLine()) {
+                String ligne = scanner.nextLine();
+                // On ignore les lignes vides
+                if (!ligne.trim().isEmpty()) {
+                    String[] donnees = ligne.split(";");
+                    if (donnees.length == 4) {
+                        // LE TRIM() EST OBLIGATOIRE POUR EVITER LES BUGS
+                        String source = donnees[0].trim().toUpperCase();
+                        String dest = donnees[1].trim().toUpperCase();
+                        int poids = Integer.parseInt(donnees[2].trim());
+                        int type = Integer.parseInt(donnees[3].trim());
 
-            while (scanner.hasNextLine()) { // tant qu'il y a une ligne à lire
-                String ligne = scanner.nextLine(); // lecture ligne
+                        // DEBUG : Si on voit C-D, on hurle
+                        if ((source.equals("C") && dest.equals("D")) || (source.equals("D") && dest.equals("C"))) {
+                            System.err.println("ALERTE ROUGE : Une arête C-D a été trouvée dans le fichier !! Ligne : " + ligne);
+                        }
 
-                if (!ligne.trim().isEmpty()) { // ignorer lignes vides
-                    String[] donnees = ligne.split(";"); // séparation données ligne par point-virgule
-
-                    if (donnees.length == 4) { // verification nombre de colonnes
-                        String source = donnees[0];
-                        String destination = donnees[1];
-                        int poids = Integer.parseInt(donnees[2]);
-                        int type = Integer.parseInt(donnees[3]);
-
-                        ajouter_Rues(source, destination, poids, type); // on crée les aretes
+                        ajouter_Rues(source, dest, poids, type);
                     }
                 }
             }
         }
-        System.out.println("Rues chargées depuis " + nomFichier);
+        System.out.println("Rues chargées.");
     }
 
     public void ajouter_Sommet(String id) {
