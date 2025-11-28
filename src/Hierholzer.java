@@ -93,4 +93,35 @@ public class Hierholzer { // Déclaration de la classe
         }
         cycle(grapheRepare, false);
     }
+
+    public static void cheminMixte(Graphe g, Sommet depot, List<Sommet> sommetsProbleme) {
+        Sommet u = sommetsProbleme.get(0);
+        Sommet v = sommetsProbleme.get(1);
+
+        System.out.println("--> Réparation du graphe mixte en dupliquant le plus court chemin entre " + u.id + " et " + v.id + "...");
+
+        Itineraire.Dijkstra cheminReparation = Itineraire.trouver_chemin(g, u, v);
+        if (cheminReparation.getDistance() == Integer.MAX_VALUE) { /* Erreur */ return; }
+
+        System.out.println("Chemin de réparation trouvé : " + cheminReparation.getChemin() + " (coût: " + cheminReparation.getDistance() + ")");
+
+        Graphe grapheRepare = new Graphe(g);
+        List<Sommet> cheminADupliquer = cheminReparation.getChemin();
+        for (int i = 0; i < cheminADupliquer.size() - 1; i++) {
+            Sommet s1 = cheminADupliquer.get(i);
+            Sommet s2 = cheminADupliquer.get(i + 1);
+            int poids = 0;
+            for (Arete a : s1.aretes) { if (a.destination.equals(s2)) { poids = a.poids; break; } }
+
+            // On duplique avec des arcs orientés car le graphe final sera traité comme orienté
+            grapheRepare.ajouter_Arc(s1.id, s2.id, poids, 2);
+        }
+
+        System.out.println("--> Le graphe est maintenant équilibré. Lancement de Hierholzer en mode orienté...");
+        cycle(grapheRepare, true); // On lance en mode ORIENTÉ
+
+        // Le calcul de la distance totale pour un graphe mixte est complexe...
+        // On peut faire une approximation simple
+        System.out.println("--> (Le calcul de la distance totale pour ce cas n'est pas implémenté en détail)");
+    }
 }

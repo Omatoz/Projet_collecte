@@ -102,17 +102,17 @@ public class Postier {
     }
 
     private static void lancer_mixte(Graphe g) {
-        System.out.println("\n--- Analyse pour graphe MIXTE ---");
         List<Sommet> sommetsProbleme = Eulerien.trouverSommetsImpairsMixtes(g);
 
-        if (sommetsProbleme.isEmpty()) {
-            System.out.println("--> DIAGNOSTIC : Le graphe mixte est Eulérien.");
-            System.out.println("    L'algorithme de Hierholzer pour graphe mixte n'est pas implémenté.");
-            // Hierholzer.cycleMixte(g); // Appel futur
+        if (sommetsProbleme.size() == 2) {
+            System.out.println("DIAGNOSTIC : Le graphe mixte est Eulérien.");
+            System.out.println("L'algorithme de Hierholzer pour graphe mixte n'est pas implémenté.");
+            Hierholzer.cycle(g, true);
+            // Hierholzer.cheminMixte(g, g.getSommet("A"), sommetsProbleme); // Appel futur
         } else {
-            System.out.println("--> DIAGNOSTIC : Le graphe mixte n'est pas Eulérien.");
-            System.out.println("    Il a " + sommetsProbleme.size() + " sommets à problème : " + sommetsProbleme);
-            System.out.println("    Lancement de l'algorithme du Postier Chinois Mixte...");
+            System.out.println("DIAGNOSTIC : Le graphe mixte n'est pas Eulérien.");
+            System.out.println("Il a " + sommetsProbleme.size() + " sommets à problème : " + sommetsProbleme);
+            System.out.println("Lancement de l'algorithme du Postier Chinois Mixte...");
             resoudrePostierMixte(g, sommetsProbleme);
         }
     }
@@ -130,22 +130,20 @@ public class Postier {
         for (List<Sommet> paire : paires) {
             Itineraire.Dijkstra chemin = matrice.get(paire.get(0)).get(paire.get(1));
             coutReparation += chemin.getDistance();
-            dupliquerChemin(grapheRepare, chemin, 2); // On duplique avec des arcs orientés (type 2)
+            dupliquerChemin(grapheRepare, chemin, 2);
         }
         System.out.println("--> Coût de la duplication : " + coutReparation);
 
         System.out.println("--> Le graphe est maintenant équilibré (traité comme orienté). Lancement de Hierholzer...");
-        // Une fois réparé, un graphe mixte se comporte comme un graphe orienté eulérien
         Hierholzer.cycle(grapheRepare, true);
 
-        // Le calcul de la distance totale est complexe pour un graphe mixte.
-        // On va afficher la somme des arêtes originales + la réparation.
-        int distanceOriginale = 0;
-        // Ce calcul est une approximation car il ne distingue pas type 1 et 3
-        for(Sommet s : g.get_Sommets()) { for(Arete a : s.aretes) { distanceOriginale += a.poids; } }
-        if(!g.estOriente()){ distanceOriginale /= 2; } // Heuristique simple
+        // CORRECTION : L'erreur était ici.
+        // On doit calculer la distance totale du graphe original.
+        // Pour un graphe mixte, c'est la somme de tous les arcs.
+        // Si on utilise notre modèle, on doit le traiter comme orienté.
+        int distanceOriginale = calculerDistanceTotale(g, true); // On met 'true' car on traite comme un graphe orienté
 
-        System.out.println("--> Distance totale approximative de la tournée : " + (distanceOriginale + coutReparation));
+        System.out.println("--> Distance totale de la tournée : " + (distanceOriginale + coutReparation));
     }
 
     /*private static void lancer_oriente_simplifie(Graphe g) {
