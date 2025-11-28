@@ -97,7 +97,7 @@ public class Graphe {
         }
     }
 
-    public void ajouter_Rues(String depart, String arrivee, int poids, int type) {
+    public void ajouter_Rues(String  depart, String arrivee, int poids, int type) {
         Sommet source = getSommet(depart);
         Sommet destination = getSommet(arrivee);
 

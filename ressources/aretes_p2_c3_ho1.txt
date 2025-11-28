@@ -1,0 +1,15 @@
+id_source;id_destination;poids;type
+A;B;3;1
+A;C;4;1
+B;C;6;1
+B;D;3;1
+C;D;7;1
+C;F,2;1
+C;G;5;1
+C;H;4;1
+D;E;9;1
+D;F;4;1
+E;I;3;1
+F;G;3;1
+H;J;14;1
+I;J;4;1
