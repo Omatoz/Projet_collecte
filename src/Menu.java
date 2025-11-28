@@ -240,7 +240,7 @@ public class Menu {
                 System.out.println("Le graphe n'est pas Eulérien");
                 Postier.lancer(g, hypothese);
             }
-        } else if (hypothese == 2) {
+        } else if ((hypothese == 2) || (hypothese == 3)) {
             List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
             if (sommets_non_equilibres.isEmpty()) {
                 System.out.println("SUCCÈS : Le graphe est Eulérien.");
@@ -251,8 +251,13 @@ public class Menu {
             }
         } else if (hypothese == 3) {
             List<Sommet> sommetsProblemeMixtes = Eulerien.trouverSommetsImpairsMixtes(g);
-            System.out.println("DIAGNOSTIC (HO3 - Mixte): " + sommetsProblemeMixtes + " sommet(s) à problème trouvé(s).");
-            Postier.lancer(g, hypothese);
+            if (sommetsProblemeMixtes.isEmpty()) {
+                System.out.println("SUCCÈS : Le graphe est Eulérien.");
+                Hierholzer.cycle(g, true);
+            } else {
+                System.out.println("DIAGNOSTIC (HO3 - Mixte): " + sommetsProblemeMixtes + " sommet(s) à problème trouvé(s).");
+                Postier.lancer(g, hypothese);
+            }
         }
     }
 
