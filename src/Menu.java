@@ -225,26 +225,26 @@ public class Menu {
                     System.out.println("SUCCÈS CAS 1 : Le graphe est Eulérien (tous les sommets sont de degré pair)");
                     Hierholzer.cycle(g, false);
                 } else {
-                    System.out.println("ÉCHEC CAS 1. Le fichier chargé ne correspond pas à un graphe eulérien.");
+                    System.out.println("ÉCHEC !!! Le fichier chargé ne correspond pas à un graphe eulérien.");
                     System.out.println("Sommets impairs trouvés : " + sommetsImpairs);
                 }
             } else if (cas == 2) {
                 if (sommetsImpairs.size() == 2) {
-                    System.out.println("SUCCÈS CAS 2. Le graphe est Eulérien (2 sommets impairs : " + sommetsImpairs + ")");
+                    System.out.println("Le graphe n'est pas Eulérien (2 sommets impairs : " + sommetsImpairs + ")");
                     Hierholzer.chemin(g, g.getSommet("A"), sommetsImpairs);
                 } else {
-                    System.out.println("ÉCHEC CAS 2. Le fichier chargé n'a pas exactement 2 sommets impairs.");
+                    System.out.println("ÉCHEC !!! Le fichier chargé n'a pas exactement 2 sommets impairs.");
                     System.out.println("Nombre de sommets impairs trouvés : " + sommetsImpairs.size());
                 }
             } else if (cas == 3) {
-                System.out.println("SUCCÈS CAS 3. Le graphe est Eulérien");
+                System.out.println("Le graphe n'est pas Eulérien");
                 Postier.lancer(g, hypothese);
             }
         } else if ((hypothese == 2) || (hypothese == 3)) {
             List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
 
             if (sommets_non_equilibres.isEmpty()) {
-                System.out.println("SUCCÈS CAS 1 : Le graphe est Eulérien (tous les sommets sont de degré pair)");
+                System.out.println("SUCCÈS : Le graphe est Eulérien.");
                 Hierholzer.cycle(g, true);
             } else {
                 System.out.println("Le graphe n'est pas Eulérien.");

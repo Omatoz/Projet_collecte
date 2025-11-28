@@ -49,17 +49,16 @@ public class Hierholzer {
     }
 
     public static void cycle(Graphe g, boolean estOriente) {
-        System.out.println("--> Lancement de l'algorithme de Hierholzer...");
         try {
             List<Sommet> cycle = Hierholzer.trouverCycleEulerien(g, estOriente);
 
             System.out.println("\n[RÉSULTATS]");
-            System.out.println("--> Tournée calculée avec succès !");
-            System.out.println("--> Nombre de rues parcourues : " + (cycle.size() - 1));
+            System.out.println("Tournée calculée avec succès !");
+            System.out.println("Nombre de rues parcourues : " + (cycle.size() - 1));
 
             StringJoiner sj = new StringJoiner(" -> ");
             for(Sommet s : cycle) { sj.add(s.id); }
-            System.out.println("--> Itinéraire du camion : " + sj.toString());
+            System.out.println("Itinéraire du camion : " + sj.toString());
 
         } catch (Exception e) {
             System.err.println("Une erreur est survenue pendant l'algorithme : " + e.getMessage());
@@ -70,7 +69,7 @@ public class Hierholzer {
         Sommet u = sommetsImpairs.get(0);
         Sommet v = sommetsImpairs.get(1);
 
-        System.out.println("--> Réparation du graphe en ajoutant un chemin virtuel entre " + u.id + " et " + v.id + "...");
+        System.out.println("Réparation du graphe en ajoutant un chemin virtuel entre " + u.id + " et " + v.id + "...");
 
         // On utilise Dijkstra pour trouver le plus court chemin pour "réparer" le graphe.
         Itineraire.Dijkstra cheminReparation = Itineraire.trouver_chemin(g, u, v);

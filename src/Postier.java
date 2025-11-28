@@ -12,31 +12,30 @@ public class Postier {
     }
 
     private static void lancer_non_oriente(Graphe g) {
-        System.out.println("\n--- Lancement de l'algorithme pour graphe NON ORIENTÉ ---");
         List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
         int nbImpairs = sommetsImpairs.size();
-        System.out.println("--> DIAGNOSTIC : " + nbImpairs + " sommet(s) de degré impair trouvé(s).");
+        System.out.println("DIAGNOSTIC : " + nbImpairs + " sommet(s) de degré impair trouvé(s).");
 
         if (nbImpairs == 0) {
-            System.out.println("    Le graphe est Eulérien (Cas 1).");
+            System.out.println("Le graphe est Eulérien (Cas 1).");
             Hierholzer.cycle(g, false);
         } else if (nbImpairs == 2) {
-            System.out.println("    Le graphe est Semi-Eulérien (Cas 2).");
+            System.out.println("Le graphe est Semi-Eulérien (Cas 2).");
             Hierholzer.chemin(g, g.getSommet("A"), sommetsImpairs);
         } else {
-            System.out.println("    Le graphe est un cas pour le Postier Chinois (Cas 3).");
+            System.out.println("Le graphe est un cas pour le Postier Chinois (Cas 3).");
             resoudrePostierNonOriente(g, sommetsImpairs);
         }
     }
 
     private static void resoudrePostierNonOriente(Graphe g, List<Sommet> sommetsImpairs) {
-        System.out.println("--> Calcul des plus courts chemins entre les sommets impairs...");
+        System.out.println("Calcul des plus courts chemins entre les sommets impairs...");
         Map<Sommet, Map<Sommet, Itineraire.Dijkstra>> matrice = calculerMatriceDistances(g, sommetsImpairs, sommetsImpairs);
 
-        System.out.println("--> Recherche d'un couplage (heuristique gloutonne)...");
+        System.out.println("Recherche d'un couplage (heuristique gloutonne)...");
         // CORRECTION : On appelle la bonne méthode avec le bon nom
         List<List<Sommet>> paires = trouverCouplageGloutonNonOriente(sommetsImpairs, matrice);
-        System.out.println("--> Paires trouvées pour réparer le graphe : " + paires);
+        System.out.println("Paires trouvées pour réparer le graphe : " + paires);
 
         Graphe grapheRepare = new Graphe(g);
         int coutReparation = 0;
@@ -45,25 +44,24 @@ public class Postier {
             coutReparation += chemin.getDistance();
             dupliquerChemin(grapheRepare, chemin, 1);
         }
-        System.out.println("--> Coût de la duplication : " + coutReparation);
+        System.out.println("Coût de la duplication : " + coutReparation);
 
-        System.out.println("--> Le graphe est maintenant eulérien. Lancement de Hierholzer...");
+        System.out.println("Le graphe est maintenant eulérien. Lancement de Hierholzer...");
         Hierholzer.cycle(grapheRepare, false);
 
         int distanceOriginale = calculerDistanceTotale(g, false);
-        System.out.println("--> Distance totale de la tournée : " + (distanceOriginale + coutReparation));
+        System.out.println("Distance totale de la tournée : " + (distanceOriginale + coutReparation));
     }
 
 
     private static void lancer_oriente(Graphe g) {
-        System.out.println("\n--- Lancement de l'algorithme pour graphe ORIENTÉ/MIXTE ---");
         List<Sommet> sommetsNonEquilibres = Eulerien.Eulerien_oriente(g);
 
         if (sommetsNonEquilibres.isEmpty()) {
-            System.out.println("--> DIAGNOSTIC : Le graphe est Eulérien (équilibré).");
+            System.out.println("DIAGNOSTIC : Le graphe est Eulérien (équilibré).");
             Hierholzer.cycle(g, true);
         } else {
-            System.out.println("--> DIAGNOSTIC : Le graphe n'est pas Eulérien.");
+            System.out.println("DIAGNOSTIC : Le graphe n'est pas Eulérien.");
             resoudrePostierOriente(g);
         }
     }
