@@ -10,8 +10,20 @@ public class  Sommet {
     }
 
     public void ajouter_arete(Sommet destination, int poids, int type) {
-        this.aretes.add(new Arete(destination, poids, type))
-        ;
+        this.aretes.add(new Arete(destination, poids, type));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sommet sommet = (Sommet) o;
+        return Objects.equals(id, sommet.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override

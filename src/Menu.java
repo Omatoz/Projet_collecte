@@ -222,7 +222,7 @@ public class Menu {
             List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
             if (cas == 1) {
                 if (sommetsImpairs.isEmpty()) {
-                    System.out.println("SUCCÈS CAS 1 : Le graphe est Eulérien (tous les sommets sont de degré pair)");
+                    System.out.println("SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
                     Hierholzer.cycle(g, false);
                 } else {
                     System.out.println("ÉCHEC !!! Le fichier chargé ne correspond pas à un graphe eulérien.");

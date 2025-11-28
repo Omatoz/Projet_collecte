@@ -117,6 +117,7 @@ public class Graphe {
                 source.ajouter_arete(destination, poids, type);
                 break;
         }
+
     }
 
     // stockage en mémoire vive (matrice d'adjacence)
