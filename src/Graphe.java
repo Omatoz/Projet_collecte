@@ -21,7 +21,7 @@ public class Graphe {
             Sommet sourceCopie = this.getSommet(s.id);
             for (Arete a : s.aretes) {
                 Sommet destCopie = this.getSommet(a.destination.id);
-                sourceCopie.ajouter_arete(destCopie, a.poids);
+                sourceCopie.ajouter_arete(destCopie, a.poids,  a.type);
             }
         }
     }
@@ -89,6 +89,15 @@ public class Graphe {
         return sommets.values();
     }
 
+    public void ajouter_Arc(String idSource, String idDestination, int poids, int typeOrigine) {
+        Sommet source = getSommet(idSource);
+        Sommet destination = getSommet(idDestination);
+        if (source != null && destination != null) {
+            // On ajoute un seul et unique arc
+            source.ajouter_arete(destination, poids, typeOrigine);
+        }
+    }
+
     public void ajouter_Rues(String depart, String arrivee, int poids, int type) {
         Sommet source = getSommet(depart);
         Sommet destination = getSommet(arrivee);
@@ -101,11 +110,11 @@ public class Graphe {
         switch (type) {
             case 1: // une voie deux sens (non orienté)
             case 3: // Double voies differentes  (2 orientés)
-                source.ajouter_arete(destination, poids); // ajout arete des deux sens
-                destination.ajouter_arete(source, poids);
+                source.ajouter_arete(destination, poids, type); // ajout arete des deux sens
+                destination.ajouter_arete(source, poids, type);
                 break;
             case 2: // sens unique  (orienté)
-                source.ajouter_arete(destination, poids);
+                source.ajouter_arete(destination, poids, type);
                 break;
         }
     }

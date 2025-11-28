@@ -9,8 +9,9 @@ public class  Sommet {
         this.id = id;
     }
 
-    public void ajouter_arete(Sommet destination, int poids) {
-        this.aretes.add(new Arete(destination, poids));
+    public void ajouter_arete(Sommet destination, int poids, int type) {
+        this.aretes.add(new Arete(destination, poids, type))
+        ;
     }
 
     @Override

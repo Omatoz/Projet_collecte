@@ -238,7 +238,7 @@ public class Menu {
                 }
             } else if (cas == 3) {
                 System.out.println("SUCCÈS CAS 3. Le graphe est Eulérien");
-                Postier.lancer(g);
+                Postier.lancer(g, hypothese);
             }
         } else if ((hypothese == 2) || (hypothese == 3)) {
             List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
@@ -248,7 +248,7 @@ public class Menu {
                 Hierholzer.cycle(g, true);
             } else {
                 System.out.println("Le graphe n'est pas Eulérien.");
-                Postier.lancer(g);
+                Postier.lancer(g, hypothese);
             }
         }
     }
