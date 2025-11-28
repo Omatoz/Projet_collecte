@@ -212,7 +212,7 @@ public class Menu {
         Graphe g = null;
         try {
             g = new Graphe(f_sommets, f_aretes);
-            System.out.println("Graphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
+            System.out.println("\nGraphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
         } catch (Exception e) {
             System.err.println("!!! Erreur de chargement !!! " + e.getMessage());
             return;

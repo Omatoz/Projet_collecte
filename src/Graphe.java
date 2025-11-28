@@ -67,11 +67,6 @@ public class Graphe {
                         int poids = Integer.parseInt(donnees[2].trim());
                         int type = Integer.parseInt(donnees[3].trim());
 
-                        // DEBUG : Si on voit C-D, on hurle
-                        if ((source.equals("C") && dest.equals("D")) || (source.equals("D") && dest.equals("C"))) {
-                            System.err.println("ALERTE ROUGE : Une arête C-D a été trouvée dans le fichier !! Ligne : " + ligne);
-                        }
-
                         ajouter_Rues(source, dest, poids, type);
                     }
                 }

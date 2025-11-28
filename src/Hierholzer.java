@@ -1,84 +1,45 @@
 import java.util.*;
-
 public class Hierholzer {
 
-
-    // Classe interne pour manipuler une copie des arêtes sans casser le graphe original
-    private static class CopieArete {
-        Sommet destination;
-        int type;
-        CopieArete(Sommet dest, int t) { this.destination = dest; this.type = t; }
-
-        @Override
-        public String toString() { return destination.id; }
-    }
-
-    public static List<Sommet> trouverCycleEulerien(Graphe graphe) {
+    public static List<Sommet> trouverCycleEulerien(Graphe graphe, boolean estOriente) {
         if (graphe == null || graphe.get_Sommets().isEmpty()) {
-            throw new RuntimeException("Le graphe est vide.");
+            throw new RuntimeException("Le graphe est vide ou non initialisé.");
         }
 
-        // 1. COPIE DES ARÊTES (Map avec String pour éviter bugs de référence)
-        Map<String, List<CopieArete>> adjacenceTemp = new HashMap<>();
-
+        // Création de la copie temporaire (Map d'adjacence)
+        Map<Sommet, List<Sommet>> adjacenceTemp = new HashMap<>();
         for (Sommet s : graphe.get_Sommets()) {
-            adjacenceTemp.put(s.id, new ArrayList<>());
-        }
-
-        // Remplissage
-        for (Sommet s : graphe.get_Sommets()) {
+            List<Sommet> voisins = new ArrayList<>();
             for (Arete a : s.aretes) {
-                adjacenceTemp.get(s.id).add(new CopieArete(a.destination, a.type));
+                voisins.add(a.destination);
             }
+            adjacenceTemp.put(s, voisins);
         }
 
-        // 2. ALGORITHME DE HIERHOLZER
+        // Initialisation
         Stack<Sommet> pile = new Stack<>();
         List<Sommet> cycle = new ArrayList<>();
-
-        // Point de départ : A si possible, sinon le premier dispo
-        Sommet depart = graphe.getSommet("A");
-        if (depart == null) depart = graphe.get_Sommets().iterator().next();
-
+        Sommet depart = graphe.get_Sommets().iterator().next();
         pile.push(depart);
 
+        // Boucle principale
         while (!pile.isEmpty()) {
             Sommet u = pile.peek();
-            List<CopieArete> voisinsDeU = adjacenceTemp.get(u.id);
+            List<Sommet> voisinsDeU = adjacenceTemp.get(u);
 
             if (voisinsDeU != null && !voisinsDeU.isEmpty()) {
-                // On emprunte la première arête disponible
-                CopieArete areteChoisie = voisinsDeU.remove(0);
-                Sommet v = areteChoisie.destination;
-
+                Sommet v = voisinsDeU.get(0);
                 pile.push(v);
+                voisinsDeU.remove(0); // Suppression de l'arête (u, v) et (v, u)
 
-                // --- GESTION GRAPHES MIXTES (HO3) ---
-
-                // CAS 1 : Rue à double sens non-orientée (Type 1)
-                // Si je passe de U à V, je "consomme" la rue entière.
-                // Je ne peux pas revenir tout de suite de V à U par cette même rue.
-                // -> Je dois supprimer l'arête inverse V->U.
-                if (areteChoisie.type == 1) {
-                    List<CopieArete> voisinsDeV = adjacenceTemp.get(v.id);
+                // On supprime l'arête inverse si le graphe est non orienté
+                if (!estOriente) {
+                    List<Sommet> voisinsDeV = adjacenceTemp.get(v);
                     if (voisinsDeV != null) {
-                        for (int i = 0; i < voisinsDeV.size(); i++) {
-                            // Comparaison par ID (String) pour être sûr
-                            if (voisinsDeV.get(i).destination.id.equals(u.id) && voisinsDeV.get(i).type == 1) {
-                                voisinsDeV.remove(i);
-                                break; // Suppression unique
-                            }
-                        }
+                        voisinsDeV.remove(u);
                     }
                 }
-
-                // CAS 2 & 3 : Sens unique (Type 2) ou Double sens orienté (Type 3)
-                // Pour le Type 3, la rue a deux voies distinctes.
-                // Si je passe U->V (voie de droite), la voie V->U (voie de gauche) est encore libre.
-                // -> ON NE SUPPRIME PAS L'INVERSE.
-
             } else {
-                // Plus de voisins, on ajoute au cycle final et on dépile
                 cycle.add(pile.pop());
             }
         }
@@ -87,67 +48,48 @@ public class Hierholzer {
         return cycle;
     }
 
-    // --- MÉTHODES D'AFFICHAGE ET D'APPEL ---
-
-    // Appel pour le Cas 1 (Graphe complet) et Cas 3 (Postier Chinois)
-    public static void cycle(Graphe g, boolean estOriente) { // Le boolean ne sert plus ici, géré par Type
+    public static void cycle(Graphe g, boolean estOriente) {
+        System.out.println("--> Lancement de l'algorithme de Hierholzer...");
         try {
-            long debut = System.currentTimeMillis();
-            List<Sommet> resultat = trouverCycleEulerien(g);
-            long fin = System.currentTimeMillis();
+            List<Sommet> cycle = Hierholzer.trouverCycleEulerien(g, estOriente);
 
-            System.out.println("\n[RÉSULTATS DE LA TOURNÉE]");
-            System.out.println("------------------------------------------------");
-            System.out.println("Statut      : SUCCÈS");
-            System.out.println("Temps calcul: " + (fin - debut) + " ms");
-            System.out.println("Nombre Rues : " + (resultat.size() - 1));
-            System.out.println("------------------------------------------------");
+            System.out.println("\n[RÉSULTATS]");
+            System.out.println("--> Tournée calculée avec succès !");
+            System.out.println("--> Nombre de rues parcourues : " + (cycle.size() - 1));
 
-            System.out.println("ITINÉRAIRE DÉTAILLÉ :");
             StringJoiner sj = new StringJoiner(" -> ");
-            for (Sommet s : resultat) {
-                sj.add(s.id);
-            }
-            System.out.println(sj.toString());
-            System.out.println("------------------------------------------------");
+            for(Sommet s : cycle) { sj.add(s.id); }
+            System.out.println("--> Itinéraire du camion : " + sj.toString());
 
         } catch (Exception e) {
-            System.err.println("Erreur calcul cycle : " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Une erreur est survenue pendant l'algorithme : " + e.getMessage());
         }
     }
 
-    // Appel pour le Cas 2 (Semi-Eulérien)
     public static void chemin(Graphe g, Sommet depot, List<Sommet> sommetsImpairs) {
-        if (sommetsImpairs.size() != 2) return;
-
         Sommet u = sommetsImpairs.get(0);
         Sommet v = sommetsImpairs.get(1);
 
-        System.out.println("--> Réparation du graphe (Chemin virtuel " + u.id + " <-> " + v.id + ")");
+        System.out.println("--> Réparation du graphe en ajoutant un chemin virtuel entre " + u.id + " et " + v.id + "...");
 
-        // 1. Calcul du chemin le plus court
-        Itineraire.Dijkstra cheminRetour = Itineraire.trouver_chemin(g, u, v);
+        // On utilise Dijkstra pour trouver le plus court chemin pour "réparer" le graphe.
+        Itineraire.Dijkstra cheminReparation = Itineraire.trouver_chemin(g, u, v);
 
-        // 2. Ajout des arêtes virtuelles pour fermer le cycle
-        List<Sommet> path = cheminRetour.getChemin();
-        for (int i = 0; i < path.size() - 1; i++) {
-            Sommet s1 = path.get(i);
-            Sommet s2 = path.get(i+1);
-            // On ajoute une arête Type 1 pour simplifier la fermeture
-            g.ajouter_Arc(s1.id, s2.id, 0, 1);
+        // On crée une copie du graphe pour y ajouter les arêtes dupliquées.
+        Graphe grapheRepare = new Graphe(g);
+        for (int i = 0; i < cheminReparation.getChemin().size() - 1; i++) {
+            Sommet s1 = cheminReparation.getChemin().get(i);
+            Sommet s2 = cheminReparation.getChemin().get(i+1);
+            // On cherche le poids de l'arête originale pour la dupliquer
+            int poids = 0;
+            for(Arete a : s1.aretes){
+                if(a.destination.equals(s2)){
+                    poids = a.poids;
+                    break;
+                }
+            }
+            grapheRepare.ajouter_Rues(s1.id, s2.id, poids, 1); // On duplique
         }
-
-        // 3. Calcul du cycle sur le graphe fermé
-        List<Sommet> cycleComplet = trouverCycleEulerien(g);
-
-        // 4. Nettoyage de l'affichage (Optionnel : retirer le retour virtuel)
-        // Pour l'instant, on affiche tout pour vérifier que ça boucle.
-
-        System.out.println("\n[RÉSULTATS SEMI-EULÉRIEN]");
-        System.out.println("Chemin ouvert trouvé (retour au dépôt non inclus ou via chemin virtuel) :");
-        StringJoiner sj = new StringJoiner(" -> ");
-        for (Sommet s : cycleComplet) sj.add(s.id);
-        System.out.println(sj.toString());
+        cycle(grapheRepare, false);
     }
 }
