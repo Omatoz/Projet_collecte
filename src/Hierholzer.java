@@ -1,13 +1,14 @@
 import java.util.*;
-public class Hierholzer {
+public class Hierholzer { // Déclaration de la classe
 
-    public static List<Sommet> trouverCycleEulerien(Graphe graphe, boolean estOriente) {
+    public static List<Sommet> trouverCycleEulerien(Graphe graphe, boolean estOriente) { // Méthode statique qui renvoie le chemin final
+        // Vérification de l'existence du graphe
         if (graphe == null || graphe.get_Sommets().isEmpty()) {
             throw new RuntimeException("Le graphe est vide ou non initialisé.");
         }
 
-        // Création de la copie temporaire (Map d'adjacence)
-        Map<Sommet, List<Sommet>> adjacenceTemp = new HashMap<>();
+        // Création de la copie temporaire du graphe car algorithme de Hierholzer "destructif" (Map d'adjacence)
+        Map<Sommet, List<Sommet>> adjacenceTemp = new HashMap<>(); // Création d'un dictionnaire qui associe les sommet à la liste de ses voisins
         for (Sommet s : graphe.get_Sommets()) {
             List<Sommet> voisins = new ArrayList<>();
             for (Arete a : s.aretes) {
