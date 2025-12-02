@@ -31,6 +31,30 @@ public class Eulerien {
         return sommets_non_equilibres;
     }
 
+    // Dans Eulerien.java ou une classe utilitaire
+    public static boolean estMixteEulérien(Graphe g) {
+        for (Sommet s : g.get_Sommets()) {
+            int degreType1 = 0, degreSortantOriente = 0, degreEntrantOriente = 0;
+
+            for (Arete a : s.aretes) {
+                if (a.type == 1)
+                    degreType1++;
+                else if (a.type == 2 || a.type == 3) degreSortantOriente++;
+            }
+
+            for (Sommet autre : g.get_Sommets()) {
+                for (Arete a : autre.aretes) {
+                    if ((a.type == 2 || a.type == 3) && a.destination.equals(s)) degreEntrantOriente++;
+                }
+            }
+
+            if (degreType1 % 2 != 0 || degreSortantOriente != degreEntrantOriente) {
+                return false; // Au moins un sommet ne respecte pas les conditions
+            }
+        }
+        return true; // Tous les sommets respectent les conditions
+    }
+
     public static List<Sommet> trouverSommetsImpairsMixtes(Graphe g) {
         List<Sommet> sommetsProbleme = new ArrayList<>();
 

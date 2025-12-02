@@ -7,10 +7,11 @@ public class Postier {
             lancer_non_oriente(g);
         } else if (hypothese == 2) {
             lancer_oriente(g);
-        } else { // hypothese == 3
+        } else if (hypothese == 3) {
             lancer_mixte(g);
         }
     }
+
 
     private static void lancer_non_oriente(Graphe g) {
         List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
@@ -34,24 +35,56 @@ public class Postier {
         Map<Sommet, Map<Sommet, Itineraire.Dijkstra>> matrice = calculerMatriceDistances(g, sommetsImpairs, sommetsImpairs);
 
         System.out.println("Recherche d'un couplage (heuristique gloutonne)...");
-        // CORRECTION : On appelle la bonne méthode avec le bon nom
         List<List<Sommet>> paires = trouverCouplageGloutonNonOriente(sommetsImpairs, matrice);
         System.out.println("Paires trouvées pour réparer le graphe : " + paires);
 
         Graphe grapheRepare = new Graphe(g);
         int coutReparation = 0;
+
         for (List<Sommet> paire : paires) {
             Itineraire.Dijkstra chemin = matrice.get(paire.get(0)).get(paire.get(1));
             coutReparation += chemin.getDistance();
-            dupliquerChemin(grapheRepare, chemin, 1);
-        }
-        System.out.println("Coût de la duplication : " + coutReparation);
 
+            // On duplique le chemin pour équilibrer les sommets impairs
+            dupliquerCheminNonOriente(grapheRepare, chemin);
+        }
+
+        System.out.println("--> Coût de la duplication : " + coutReparation);
         System.out.println("Le graphe est maintenant eulérien. Lancement de Hierholzer...");
         Hierholzer.cycle(grapheRepare, false);
 
         int distanceOriginale = calculerDistanceTotale(g, false);
         System.out.println("Distance totale de la tournée : " + (distanceOriginale + coutReparation));
+    }
+
+    private static void dupliquerCheminNonOriente(Graphe graphe, Itineraire.Dijkstra chemin) {
+        List<Sommet> cheminADupliquer = chemin.getChemin();
+
+        for (int i = 0; i < cheminADupliquer.size() - 1; i++) {
+            Sommet s1 = cheminADupliquer.get(i);
+            Sommet s2 = cheminADupliquer.get(i + 1);
+
+            boolean existe = false;
+            for (Arete a : s1.aretes) {
+                if (a.destination.equals(s2)) {
+                    existe = true;
+                    break;
+                }
+            }
+
+            if (!existe) {
+                int poids = 1;
+                for (Arete a : s1.aretes) {
+                    if (a.destination.equals(s2)) {
+                        poids = a.poids;
+                        break;
+                    }
+                }
+                graphe.ajouter_Rues(s1.id, s2.id, poids, 1);
+                graphe.ajouter_Rues(s2.id, s1.id, poids, 1);
+                System.out.println("Arête de réparation ajoutée : " + s1.id + " <-> " + s2.id);
+            }
+        }
     }
 
 
@@ -81,16 +114,19 @@ public class Postier {
         Map<Sommet, Map<Sommet, Itineraire.Dijkstra>> matrice = calculerMatriceDistances(g, sources, puits);
 
         System.out.println("--> Recherche des chemins de réparation (heuristique gloutonne)...");
-        // CORRECTION : On appelle la bonne méthode avec le bon nom
         List<Itineraire.Dijkstra> cheminsAReparer = trouverReparationsGloutonnesOriente(differences, matrice);
 
         Graphe grapheRepare = new Graphe(g);
         int coutReparation = 0;
         System.out.println("--> Application des réparations...");
         for (Itineraire.Dijkstra chemin : cheminsAReparer) {
-            System.out.println("    - Ajout du chemin : " + chemin.getChemin());
+            Sommet sourceChoisie = chemin.getChemin().get(0);
+            Sommet puitChoisi = chemin.getChemin().get(chemin.getChemin().size() - 1);
+
+            // On duplique le chemin dans le graphe réparé en inversant si nécessaire
+            dupliquerCheminOriente(grapheRepare, chemin, sourceChoisie, puitChoisi);
             coutReparation += chemin.getDistance();
-            dupliquerChemin(grapheRepare, chemin, 2);
+            System.out.println("    - Chemin ajouté : " + chemin.getChemin() + " (création arêtes si manquantes)");
         }
         System.out.println("--> Coût total de la réparation : " + coutReparation);
 
@@ -116,7 +152,6 @@ public class Postier {
             resoudrePostierMixte(g, sommetsProbleme);
         }
     }
-
     private static void resoudrePostierMixte(Graphe g, List<Sommet> sommetsProbleme) {
         System.out.println("--> Calcul des plus courts chemins entre les sommets à problème...");
         Map<Sommet, Map<Sommet, Itineraire.Dijkstra>> matrice = calculerMatriceDistances(g, sommetsProbleme, sommetsProbleme);
@@ -129,21 +164,61 @@ public class Postier {
         int coutReparation = 0;
         for (List<Sommet> paire : paires) {
             Itineraire.Dijkstra chemin = matrice.get(paire.get(0)).get(paire.get(1));
+
+            Sommet sourceChoisie = chemin.getChemin().get(0);
+            Sommet puitChoisi = chemin.getChemin().get(chemin.getChemin().size() - 1);
+
+            // Duplique le chemin en inversant si nécessaire
+            dupliquerCheminOriente(grapheRepare, chemin, sourceChoisie, puitChoisi);
             coutReparation += chemin.getDistance();
-            dupliquerChemin(grapheRepare, chemin, 2);
         }
         System.out.println("--> Coût de la duplication : " + coutReparation);
 
         System.out.println("--> Le graphe est maintenant équilibré (traité comme orienté). Lancement de Hierholzer...");
         Hierholzer.cycle(grapheRepare, true);
 
-        // CORRECTION : L'erreur était ici.
-        // On doit calculer la distance totale du graphe original.
-        // Pour un graphe mixte, c'est la somme de tous les arcs.
-        // Si on utilise notre modèle, on doit le traiter comme orienté.
-        int distanceOriginale = calculerDistanceTotale(g, true); // On met 'true' car on traite comme un graphe orienté
-
+        int distanceOriginale = calculerDistanceTotale(g, true);
         System.out.println("--> Distance totale de la tournée : " + (distanceOriginale + coutReparation));
+    }
+
+    private static void dupliquerCheminOriente(Graphe graphe, Itineraire.Dijkstra chemin, Sommet source, Sommet puit) {
+        List<Sommet> cheminADupliquer = new ArrayList<>(chemin.getChemin());
+
+        // Si la première arête existe déjà, on inverse le chemin
+        boolean existeSensOriginal = false;
+        Sommet s1 = cheminADupliquer.get(0);
+        Sommet s2 = cheminADupliquer.get(1);
+        for (Arete a : s1.aretes) {
+            if (a.destination.equals(s2)) {
+                existeSensOriginal = true;
+                break;
+            }
+        }
+
+        // On inverse le chemin si l'arête existe déjà
+        if (existeSensOriginal) {
+            Collections.reverse(cheminADupliquer);
+        }
+
+        // On ajoute maintenant les arêtes du chemin (inversé si nécessaire)
+        for (int i = 0; i < cheminADupliquer.size() - 1; i++) {
+            s1 = cheminADupliquer.get(i);
+            s2 = cheminADupliquer.get(i + 1);
+
+            boolean existe = false;
+            for (Arete a : s1.aretes) {
+                if (a.destination.equals(s2)) {
+                    existe = true;
+                    break;
+                }
+            }
+
+            if (!existe) {
+                int poids = 1;
+                graphe.ajouter_Arc(s1.id, s2.id, poids, 2);
+                System.out.println("    - Arête de réparation ajoutée : " + s1.id + " -> " + s2.id);
+            }
+        }
     }
 
     /*private static void lancer_oriente_simplifie(Graphe g) {
@@ -276,17 +351,6 @@ public class Postier {
             }
         }
         return paires;
-    }
-
-    private static void dupliquerChemin(Graphe graphe, Itineraire.Dijkstra chemin, int typeRue) {
-        List<Sommet> cheminADupliquer = chemin.getChemin();
-        for (int i = 0; i < cheminADupliquer.size() - 1; i++) {
-            Sommet s1 = cheminADupliquer.get(i);
-            Sommet s2 = cheminADupliquer.get(i + 1);
-            int poids = 0;
-            for (Arete a : s1.aretes) { if (a.destination.equals(s2)) { poids = a.poids; break; } }
-            graphe.ajouter_Rues(s1.id, s2.id, poids, typeRue);
-        }
     }
 
     private static int calculerDistanceTotale(Graphe g, boolean estOriente) {

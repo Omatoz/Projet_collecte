@@ -216,8 +216,8 @@ public class Menu {
 
         List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
         List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
-        List<Sommet> sommetsProblemeMixtes = Eulerien.trouverSommetsImpairsMixtes(g);
-
+        // List<Sommet> sommetsProblemeMixtes = Eulerien.trouverSommetsImpairsMixtes(g);
+        boolean test = Eulerien.estMixteEulérien(g);
         if (cas == 1) {
             if (hypothese == 1) {
                 if (sommetsImpairs.isEmpty()) {
@@ -233,15 +233,15 @@ public class Menu {
                     Hierholzer.cycle(g, true);
                 } else {
                     System.out.println("Le graphe n'est pas Eulérien.");
-                    Postier.lancer(g, hypothese);
+                    Hierholzer.cycle(g, true);
                 }
             } else if (hypothese == 3) {
-                if (sommets_non_equilibres.isEmpty()) {
+                if (test) {
                     System.out.println("SUCCÈS : Le graphe est Eulérien.");
                     Hierholzer.cycle(g, true);
                 } else {
-                    System.out.println("ÉCHEC !!! Le fichier chargé ne correspond pas à un graphe eulérien.");
-                    System.out.println("Sommets impairs trouvés : " + sommetsImpairs);
+                    System.out.println("Le graphe n'est pas Eulérien.");
+                    Hierholzer.cycle(g, true);
                 }
             }
         } else if (cas == 2) {
@@ -275,57 +275,15 @@ public class Menu {
                     Postier.lancer(g, hypothese);
                 }
             } else if (hypothese == 3) {
-                if (sommetsProblemeMixtes.isEmpty()) {
+                if (sommets_non_equilibres.isEmpty()) {
                     System.out.println("SUCCÈS : Le graphe est Eulérien.");
                     Hierholzer.cycle(g, true);
                 } else {
-                    System.out.println("DIAGNOSTIC (HO3 - Mixte): " + sommetsProblemeMixtes + " sommet(s) à problème trouvé(s).");
+                    System.out.println("Le graphe n'est pas Eulérien.");
                     Postier.lancer(g, hypothese);
                 }
             }
         }
-        /*
-        if (hypothese == 1) {
-            List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
-            if (cas == 1) {
-                if (sommetsImpairs.isEmpty()) {
-                    System.out.println("SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
-                    Hierholzer.cycle(g, false);
-                } else {
-                    System.out.println("ÉCHEC !!! Le fichier chargé ne correspond pas à un graphe eulérien.");
-                    System.out.println("Sommets impairs trouvés : " + sommetsImpairs);
-                }
-            } else if (cas == 2) {
-                if (sommetsImpairs.size() == 2) {
-                    System.out.println("Le graphe n'est pas Eulérien (2 sommets impairs : " + sommetsImpairs + ")");
-                    Hierholzer.chemin(g, g.getSommet("A"), sommetsImpairs);
-                } else {
-                    System.out.println("ÉCHEC !!! Le fichier chargé n'a pas exactement 2 sommets impairs.");
-                    System.out.println("Nombre de sommets impairs trouvés : " + sommetsImpairs.size());
-                }
-            } else if (cas == 3) {
-                System.out.println("Le graphe n'est pas Eulérien");
-                Postier.lancer(g, hypothese);
-            }
-        } else if ((hypothese == 2) || (hypothese == 3)) { // car CAS 2 HO3
-            List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
-            if (sommets_non_equilibres.isEmpty()) {
-                System.out.println("SUCCÈS : Le graphe est Eulérien.");
-                Hierholzer.cycle(g, true);
-            } else {
-                System.out.println("Le graphe n'est pas Eulérien.");
-                Postier.lancer(g, hypothese);
-            }
-        } else if ((cas == 3) || (hypothese == 3)) { // CAS 3 HO3
-            List<Sommet> sommetsProblemeMixtes = Eulerien.trouverSommetsImpairsMixtes(g);
-            if (sommetsProblemeMixtes.isEmpty()) {
-                System.out.println("SUCCÈS : Le graphe est Eulérien.");
-                Hierholzer.cycle(g, true);
-            } else {
-                System.out.println("DIAGNOSTIC (HO3 - Mixte): " + sommetsProblemeMixtes + " sommet(s) à problème trouvé(s).");
-                Postier.lancer(g, hypothese);
-            }
-        }*/
     }
 
     private int options(int min, int max) {
