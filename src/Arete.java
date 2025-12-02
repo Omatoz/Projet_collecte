@@ -10,8 +10,14 @@ public class Arete {
         this.type = type;
     }
 
-    // getter
+    // getters
     public Sommet getDestination() {
         return destination;
+    }
+    public int getPoids() {
+        return poids;
+    }
+    public int getType() {
+        return type;
     }
 }
