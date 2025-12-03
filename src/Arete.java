@@ -1,4 +1,5 @@
 public class Arete {
+
     public Sommet destination;
     public int poids;
     public int type; // 1, 2, ou 3, représente le type de la rue d'origine
