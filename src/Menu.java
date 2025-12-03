@@ -214,9 +214,11 @@ public class Menu {
             return;
         }
 
+
         List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
         List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
-        // List<Sommet> sommetsProblemeMixtes = Eulerien.trouverSommetsImpairsMixtes(g);
+        List<Sommet> problemesMixtes = Eulerien.trouverSommetsImpairsMixtes(g);
+
         boolean test = Eulerien.estMixteEulérien(g);
         if (cas == 1) {
             if (hypothese == 1) {
@@ -253,13 +255,13 @@ public class Menu {
                     System.out.println("ÉCHEC !!! Le fichier chargé n'a pas exactement 2 sommets impairs.");
                     System.out.println("Nombre de sommets impairs trouvés : " + sommetsImpairs.size());
                 }
-            } else if ((hypothese == 2) || (hypothese == 3)) { // car CAS 2 HO3
+            } else if ((hypothese == 2) || (hypothese == 3)) {
                 if (sommets_non_equilibres.isEmpty()) {
                     System.out.println("SUCCÈS : Le graphe est Eulérien.");
                     Hierholzer.cycle(g, true);
                 } else {
                     System.out.println("Le graphe n'est pas Eulérien.");
-                    Postier.lancer(g, hypothese);
+                    Postier.lancer(g, 2);
                 }
             }
         } else if (cas == 3) {
