@@ -1,4 +1,4 @@
-/*import java.util.Scanner;
+import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Collections;
@@ -20,8 +20,8 @@ public class WelshPowell {
             if (!b) {
                 return true;
             }
-            return false;
         }
+        return false;
     }
 
     public int getNbCouleurs() {
@@ -29,23 +29,34 @@ public class WelshPowell {
     }
 
     public void afficherCouleurs(){
-        for (Sommet s : g.getSommet()){
+        for (Sommet s : g.get_Sommets()){
             System.out.println("Sommet: " + s.id + "est de couleur " + couleur.get(s));
         }
     }
+
     // Méthode de coloration
     public void coloration () {
+        SommetsTries.addAll(g.get_Sommets());
         // Copie des sommets du graphe
-        SommetsTries.addAll(g.getSommet());
+        SommetsTries.addAll(g.get_Sommets());
+        // On tri les degrés des sommets par décroissance
+        Collections.sort(SommetsTries, new Comparator<Sommet>() {
+            @Override
+            public int compare(Sommet s1, Sommet s2) {
 
+                // degré = nombre d'arêtes sortantes
+                int deg1 = s1.aretes.size();
+                int deg2 = s2.aretes.size();
+
+                // On trie par ordre décroissant les degrés des sommets
+                return Integer.compare(deg2, deg1);
+            }
+        });
         // Initalisation des sommets en partant du principe qu'ils ne sont pas colorés
         for (Sommet s : SommetsTries) {
             colore.put(s, false);
             couleur.put(s, 0);
         }
-
-        // On tri les degrés des sommets par décroissance
-        Collections.sort(SommetsTries, (s1, s2)) -> Integer.compare(s2.aretes.size(), s1.aretes.size());
 
         nbCouleur = 1;
 
@@ -78,4 +89,3 @@ public class WelshPowell {
 
     }
 }
-*/
