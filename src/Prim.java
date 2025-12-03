@@ -2,7 +2,7 @@ import java.util.*;
 
 public class Prim {
 
-    public static class Arete {   //class static avec info d'une arete
+    public static class Arete{
         int sommetDepart;
         int sommetArrivee;
         int poids;
