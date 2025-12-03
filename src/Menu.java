@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.util.Scanner;
 
 public class Menu {
 
@@ -25,9 +26,7 @@ public class Menu {
                     choix_theme2();
                     break;
                 case 3:
-                    System.out.println("THÈME 3 : Planifier les jours de passage dans les quartiers");
-                    System.out.println("Fonctionnalité non implémentée pour le moment.");
-                    attente();
+                    choix_theme3();
                     break;
                 case 4:
                     System.out.println("Au revoir :) !!!");
@@ -85,6 +84,24 @@ public class Menu {
         attente();
     }
 
+    private void choix_theme3() {
+        System.out.println("\nTHÈME 3 : Planification des jours de passage dans les differents quarties");
+        System.out.println("Veuillez choisir une hypothèse :");
+        System.out.println("  [1] Hypothèse 1 : Collecte des secteurs (Welsh et Powell)");
+        System.out.println("  [2] Hypothèse 2 : Collecte des secteurs sans nuisance et en tenant en compte les quantités et les capacités de collecte");
+        System.out.print("Saisir votre choix : ");
+
+        int hypothese = options(1, 2);
+
+        if (hypothese == 1) {
+            executer_p4("[1] Hypothèse 1 : Collecte des secteurs (Welsh et Powell)");
+        } else {
+            executer_p4("[2] Hypothèse 2 : Collecte des secteurs sans nuisance et en tenant en compte les quantités et les capacités de collecte");
+        }
+        attente();
+    }
+
+    // Méthode d'execution de la problematique une du theme 1
     private void executer_p1(String titre) {
         System.out.println("\n" + titre);
         System.out.println("Veuillez choisir une hypothèse de circulation :");
@@ -172,7 +189,7 @@ public class Menu {
             System.out.println("--> Tournée effectuée : " + resultat.getOrdre());
         }
     }
-
+    // Méthode execution problématique 2 du theme 1
     private void executer_p2(String titre) {
         System.out.println("\n" + titre);
         System.out.println("Veuillez choisir un cas :");
@@ -287,6 +304,42 @@ public class Menu {
             }
         }
     }
+    // Execution du theme 3
+    // Méthode pour exécuter la problématique du Thème 3
+    private void executer_p4(String titre) {
+        System.out.println("\n" + titre);
+
+        // Choix du graphe pour la planification
+        System.out.println("Veuillez choisir un graphe pour la planification :");
+        System.out.println("  [1] Graphe 1");
+        System.out.println("  [2] Graphe 2");
+        System.out.print("Saisir votre choix : ");
+        int grapheChoisi = options(1, 2);
+
+        // Fichiers de sommets et d'arêtes
+        String f_sommets = "ressources/sommets.txt"; // commun aux deux graphes
+        String f_aretes = "ressources/aretes_t3_h1_ho1." + grapheChoisi + ".txt";
+
+        // Chargement du graphe
+        Graphe g = null;
+        try {
+            g = new Graphe(f_sommets, f_aretes);
+            System.out.println("\nGraphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
+        } catch (Exception e) {
+            System.err.println("!!! Erreur de chargement !!! " + e.getMessage());
+            return;
+        }
+
+        // Création de l'instance WelshPowell et coloration
+        WelshPowell wp = new WelshPowell(g);
+        System.out.println("\nApplication de l'algorithme Welsh et Powell :");
+        wp.coloration();
+        wp.afficherCouleurs();
+
+        System.out.println("\nNombre total de créneaux nécessaires : " + wp.getNbCouleurs());
+    }
+
+
 
     private int options(int min, int max) {
         int choix = 0;

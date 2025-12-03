@@ -30,7 +30,7 @@ public class WelshPowell {
 
     public void afficherCouleurs(){
         for (Sommet s : g.get_Sommets()){
-            System.out.println("Sommet: " + s.id + "est de couleur " + couleur.get(s));
+            System.out.println("Sommet: " + s.id + " est de couleur " + couleur.get(s));
         }
     }
 
