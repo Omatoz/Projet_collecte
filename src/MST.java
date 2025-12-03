@@ -6,6 +6,8 @@ public class MST{
     private int nbSommets;
     private int[] poids;   //poids de chaque sommet
     private int capacite;   //capacite du camion
+    private Map<Integer, String> lettreSommet;
+
 
     //getters
     public List<Prim.Arete> getAretes(){
@@ -20,23 +22,55 @@ public class MST{
     public int getCapacite(){
         return capacite;
     }
+    public Map<Integer, String> getLettreSommet(){
+        return lettreSommet;
+    }
 
-    public void graphe(String fichier) throws IOException{
-        Scanner sc = new Scanner(new File(fichier)); //on lit le fichier
-        nbSommets = sc.nextInt();  //lecture de premier element qui est le nb de sommets
-        poids = new int[nbSommets];
-        for (int i=0; i<nbSommets; i++){   //pour chaque sommet on lit le poids (contenances)
-            poids[i] = sc.nextInt();
-        }
-
+    public void graphe(String fichier) throws IOException {
+        Scanner sc = new Scanner(new File(fichier));
         aretes = new ArrayList<>();
-        while (sc.hasNextLine()){   //on verifie qu'il y a encore une ligne
-            int sommetDepart = sc.nextInt();//ATTENTION : les mettre en String
-            int sommetArrive = sc.nextInt();
-            int poids = sc.nextInt();
-            aretes.add(new Prim.Arete(sommetDepart, sommetArrive, poids));   //on appel la méthode de Prim qui permet d'ajouter une arete
+        Set<String> setSommets = new HashSet<>();
+
+        if (sc.hasNextLine()) sc.nextLine();
+
+        List<String[]> lignes = new ArrayList<>();
+        while (sc.hasNextLine()) {
+            String ligne = sc.nextLine().trim();
+            if (ligne.isEmpty()) continue;
+            String[] elements = ligne.split(";");
+            if (elements.length < 3) continue;
+            lignes.add(elements);
+            setSommets.add(elements[0].trim());
+            setSommets.add(elements[1].trim());
         }
         sc.close();
+
+        List<String> listeSommets = new ArrayList<>(setSommets);
+        Collections.sort(listeSommets);
+        nbSommets = listeSommets.size();
+
+        Map<String, Integer> mapSommets = new HashMap<>();
+        for (int i = 0; i < listeSommets.size(); i++) {
+            mapSommets.put(listeSommets.get(i), i);
+        }
+
+        poids = new int[nbSommets];
+        Arrays.fill(poids, 0);
+
+        for (String[] elements : lignes) {
+            String src = elements[0].trim();
+            String dest = elements[1].trim();
+            int poidsArete = Integer.parseInt(elements[2].trim());
+            int srcIndex = mapSommets.get(src);
+            int destIndex = mapSommets.get(dest);
+            aretes.add(new Prim.Arete(srcIndex, destIndex, poidsArete));
+        }
+
+        lettreSommet = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : mapSommets.entrySet()) {
+            lettreSommet.put(entry.getValue(), entry.getKey());
+        }
+
     }
 
     public MST(String fichier, int capacite) throws IOException {  //constructeur qui
