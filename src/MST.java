@@ -91,7 +91,4 @@ public class MST{
 
         return poidsTotal;
     }
-
-
-
 }
