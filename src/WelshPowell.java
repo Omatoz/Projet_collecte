@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-public class WelshPowell {
+/*public class WelshPowell {
     private Graphe g;
     private ArrayList<Sommet> SommetsTries = new ArrayList<>();
     private Map<Sommet, Integer> couleur = new HashMap<>();
@@ -88,4 +88,4 @@ public class WelshPowell {
         }
 
     }
-}
+}*/

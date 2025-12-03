@@ -163,13 +163,13 @@ public class Menu {
 
         System.out.println("\n[PHASE 3] : RESULTATS\n");
         if (resultat.reussite()) {
-            System.out.println("--> REUSSITE : Tournée calculée avec succès !!!");
-            System.out.println("--> Ordre de visite optimisé : " + resultat.getOrdre());
-            System.out.println("--> Distance totale de la tournée : " + resultat.getDistance_totale());
-            System.out.println("--> Chemin complet : " + resultat.getChemin_final());
+            System.out.println("REUSSITE : Tournée calculée avec succès !!!");
+            System.out.println("Ordre de visite optimisé : " + resultat.getOrdre());
+            System.out.println("Distance totale de la tournée : " + resultat.getDistance_totale());
+            System.out.println("Chemin complet : " + resultat.getChemin_final());
         } else {
-            System.out.println("--> ÉCHEC : La tournée est irréalisable !!!");
-            System.out.println("--> Tournée effectuée : " + resultat.getOrdre());
+            System.out.println("ÉCHEC : La tournée est irréalisable !!!");
+            System.out.println("Tournée effectuée : " + resultat.getOrdre());
         }
     }
 
