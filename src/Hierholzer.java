@@ -73,7 +73,7 @@ public class Hierholzer { // Déclaration de la classe
         Sommet u = sommetsImpairs.get(0);
         Sommet v = sommetsImpairs.get(1);
 
-        System.out.println("--> Réparation du graphe en ajoutant un chemin virtuel entre " + u.id + " et " + v.id + "...");
+        System.out.println("Réparation du graphe en ajoutant un chemin virtuel entre " + u.id + " et " + v.id + "...");
 
         // On utilise Dijkstra pour trouver le plus court chemin pour "réparer" le graphe.
         Itineraire.Dijkstra cheminReparation = Itineraire.trouver_chemin(g, u, v);
@@ -100,7 +100,7 @@ public class Hierholzer { // Déclaration de la classe
         Sommet u = sommetsProbleme.get(0);
         Sommet v = sommetsProbleme.get(1);
 
-        System.out.println("--> Réparation du graphe mixte en dupliquant le plus court chemin entre " + u.id + " et " + v.id + "...");
+        System.out.println("Réparation du graphe mixte en dupliquant le plus court chemin entre " + u.id + " et " + v.id + "...");
 
         Itineraire.Dijkstra cheminReparation = Itineraire.trouver_chemin(g, u, v);
         if (cheminReparation.getDistance() == Integer.MAX_VALUE) { /* Erreur */ return; }
@@ -119,11 +119,7 @@ public class Hierholzer { // Déclaration de la classe
             grapheRepare.ajouter_Arc(s1.id, s2.id, poids, 2);
         }
 
-        System.out.println("--> Le graphe est maintenant équilibré. Lancement de Hierholzer en mode orienté...");
+        System.out.println("Le graphe est maintenant équilibré. Lancement de Hierholzer en mode orienté...");
         cycle(grapheRepare, true); // On lance en mode ORIENTÉ
-
-        // Le calcul de la distance totale pour un graphe mixte est complexe...
-        // On peut faire une approximation simple
-        System.out.println("--> (Le calcul de la distance totale pour ce cas n'est pas implémenté en détail)");
     }
 }

@@ -94,11 +94,11 @@ public class Eulerien {
             if (!estPairNonOriente || !estEquilibreOriente) {
                 sommetsProbleme.add(s);
                 // On peut ajouter un message de debug pour comprendre pourquoi
-                System.out.println("DEBUG: Sommet " + s.id + " à problème. " +
+                /*System.out.println("DEBUG: Sommet " + s.id + " à problème. " +
                         "Équilibre Orienté: " + estEquilibreOriente +
                         " (Entrant: " + degreEntrantOriente + ", Sortant: " + degreSortantOriente + "). " +
                         "Parité Non-Orienté: " + estPairNonOriente +
-                        " (Degré: " + degreNonOriente + ").");
+                        " (Degré: " + degreNonOriente + ").");*/
             }
         }
         return sommetsProbleme;

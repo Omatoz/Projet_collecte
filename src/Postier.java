@@ -12,7 +12,6 @@ public class Postier {
         }
     }
 
-
     private static void lancer_non_oriente(Graphe g) {
         List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
         int nbImpairs = sommetsImpairs.size();
@@ -49,7 +48,7 @@ public class Postier {
             dupliquerCheminNonOriente(grapheRepare, chemin);
         }
 
-        System.out.println("--> Coût de la duplication : " + coutReparation);
+        System.out.println("Coût de la duplication : " + coutReparation);
         System.out.println("Le graphe est maintenant eulérien. Lancement de Hierholzer...");
         Hierholzer.cycle(grapheRepare, false);
 
@@ -118,7 +117,6 @@ public class Postier {
 
         Graphe grapheRepare = new Graphe(g);
         int coutReparation = 0;
-        System.out.println("--> Application des réparations...");
         for (Itineraire.Dijkstra chemin : cheminsAReparer) {
             Sommet sourceChoisie = chemin.getChemin().get(0);
             Sommet puitChoisi = chemin.getChemin().get(chemin.getChemin().size() - 1);
@@ -126,39 +124,39 @@ public class Postier {
             // On duplique le chemin dans le graphe réparé en inversant si nécessaire
             dupliquerCheminOriente(grapheRepare, chemin, sourceChoisie, puitChoisi);
             coutReparation += chemin.getDistance();
-            System.out.println("    - Chemin ajouté : " + chemin.getChemin() + " (création arêtes si manquantes)");
+            System.out.println("Chemin ajouté : " + chemin.getChemin() + " (création arêtes si manquantes)");
         }
-        System.out.println("--> Coût total de la réparation : " + coutReparation);
+        System.out.println("Coût total de la réparation : " + coutReparation);
 
-        System.out.println("\n--> Le graphe est maintenant équilibré. Lancement de Hierholzer...");
+        System.out.println("\nLe graphe est maintenant équilibré. Lancement de Hierholzer...");
         Hierholzer.cycle(grapheRepare, true);
 
         int distanceOriginale = calculerDistanceTotale(g, true);
-        System.out.println("--> Distance totale de la tournée : " + (distanceOriginale + coutReparation));
+        System.out.println("Distance totale de la tournée : " + (distanceOriginale + coutReparation));
     }
 
     private static void lancer_mixte(Graphe g) {
         List<Sommet> sommetsProbleme = Eulerien.trouverSommetsImpairsMixtes(g);
 
         if (sommetsProbleme.size() == 2) {
-            System.out.println("DIAGNOSTIC : Le graphe mixte est Eulérien.");
+            System.out.println("Le graphe mixte est Eulérien.");
             System.out.println("L'algorithme de Hierholzer pour graphe mixte n'est pas implémenté.");
             Hierholzer.cycle(g, true);
             // Hierholzer.cheminMixte(g, g.getSommet("A"), sommetsProbleme); // Appel futur
         } else {
-            System.out.println("DIAGNOSTIC : Le graphe mixte n'est pas Eulérien.");
+            System.out.println("Le graphe mixte n'est pas Eulérien.");
             System.out.println("Il a " + sommetsProbleme.size() + " sommets à problème : " + sommetsProbleme);
             System.out.println("Lancement de l'algorithme du Postier Chinois Mixte...");
             resoudrePostierMixte(g, sommetsProbleme);
         }
     }
     private static void resoudrePostierMixte(Graphe g, List<Sommet> sommetsProbleme) {
-        System.out.println("--> Calcul des plus courts chemins entre les sommets à problème...");
+        System.out.println("Calcul des plus courts chemins entre les sommets à problème...");
         Map<Sommet, Map<Sommet, Itineraire.Dijkstra>> matrice = calculerMatriceDistances(g, sommetsProbleme, sommetsProbleme);
 
-        System.out.println("--> Recherche d'un couplage (heuristique gloutonne)...");
+        System.out.println("Recherche d'un couplage (heuristique gloutonne)...");
         List<List<Sommet>> paires = trouverCouplageGloutonNonOriente(sommetsProbleme, matrice);
-        System.out.println("--> Paires trouvées pour réparer le graphe : " + paires);
+        System.out.println("Paires trouvées pour réparer le graphe : " + paires);
 
         Graphe grapheRepare = new Graphe(g);
         int coutReparation = 0;
@@ -172,13 +170,13 @@ public class Postier {
             dupliquerCheminOriente(grapheRepare, chemin, sourceChoisie, puitChoisi);
             coutReparation += chemin.getDistance();
         }
-        System.out.println("--> Coût de la duplication : " + coutReparation);
+        System.out.println("Coût de la duplication : " + coutReparation);
 
-        System.out.println("--> Le graphe est maintenant équilibré (traité comme orienté). Lancement de Hierholzer...");
+        System.out.println("Le graphe est maintenant équilibré (traité comme orienté). Lancement de Hierholzer...");
         Hierholzer.cycle(grapheRepare, true);
 
         int distanceOriginale = calculerDistanceTotale(g, true);
-        System.out.println("--> Distance totale de la tournée : " + (distanceOriginale + coutReparation));
+        System.out.println("Distance totale de la tournée : " + (distanceOriginale + coutReparation));
     }
 
     private static void dupliquerCheminOriente(Graphe graphe, Itineraire.Dijkstra chemin, Sommet source, Sommet puit) {
@@ -216,7 +214,7 @@ public class Postier {
             if (!existe) {
                 int poids = 1;
                 graphe.ajouter_Arc(s1.id, s2.id, poids, 2);
-                System.out.println("    - Arête de réparation ajoutée : " + s1.id + " -> " + s2.id);
+                System.out.println("Arête de réparation ajoutée : " + s1.id + " -> " + s2.id);
             }
         }
     }
