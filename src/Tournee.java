@@ -54,16 +54,16 @@ public class Tournee {
                     // On stocke resultats : distance + chemin
                     resultats.get(source).put(destination, resultat);
                     if (resultat.getDistance() == Integer.MAX_VALUE) { // verifie validite distance
-                        System.out.printf("-> Distance de %s à %s = IMPOSSIBLE%n", source.id, destination.id);
+                        System.out.printf("Distance de %s à %s = IMPOSSIBLE%n", source.id, destination.id);
                     } else {
-                        System.out.printf("-> Distance de %s à %s = %d%n", source.id, destination.id, resultat.getDistance());
+                        System.out.printf("Distance de %s à %s = %d%n", source.id, destination.id, resultat.getDistance());
                     }
                 }
             }
         }
 
         System.out.println("\n[PHASE 2] : PLUS PROCHE VOISIN\n");
-        List<Sommet> ordre_final = new ArrayList<>(); // initialisation orddre de visite final
+        List<Sommet> ordre_final = new ArrayList<>(); // initialisation ordre de visite final
         List<Sommet> restants = new ArrayList<>(a_visiter);
 
         Sommet point_actuel = depot; // point de depart
