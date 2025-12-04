@@ -1,4 +1,127 @@
-/*import java.io.*;
+import java.io.*;
+import java.util.*;
+
+public class MST {
+
+    private Graphe graphe;
+    private List<Arete> acm;
+    private DFS dfs;
+    private List<Sommet> parcoursDFS;
+    private List<Sommet> parcoursOptimise;
+    private int capaciteCamion;
+
+    public MST(String fichierSommets, String fichierAretes, int capaciteCamion) throws FileNotFoundException {
+        this.graphe = new Graphe(fichierSommets, fichierAretes);
+        this.capaciteCamion = capaciteCamion;
+    }
+
+    // Étape 1 : calcul de l'arbre couvrant minimal avec Prim
+    public void calculACM() {
+        List<Sommet> listeSommets = new ArrayList<>(graphe.get_Sommets());
+        this.acm = Prim.arbreCouvrantMinimal(listeSommets);
+        System.out.println("=== Arbre Couvant Minimal (Prim) ===");
+        for (Arete a : acm) {
+            System.out.println(a.depart.id + " - " + a.destination.id + " (poids " + a.poids + ")");
+        }
+        System.out.println("====================================");
+    }
+
+    // Étape 2 : DFS sur l'arbre couvrant pour obtenir un ordre de visite
+    public void parcoursDFS() {
+        List<Sommet> sommetsACM = extraireSommetsACM(acm);
+        dfs = new DFS(sommetsACM.size());
+
+        Map<Sommet, Integer> indices = new HashMap<>();
+        for (int i = 0; i < sommetsACM.size(); i++) indices.put(sommetsACM.get(i), i);
+
+        for (Arete a : acm) {
+            int u = indices.get(a.depart);
+            int v = indices.get(a.destination);
+            dfs.ajouterArete(u, v);
+        }
+
+        dfs.dfs(0); // départ depuis le premier sommet
+        parcoursDFS = convertirIndicesEnSommets(dfs.getParcoursComplet(), sommetsACM);
+
+        System.out.println("=== Parcours DFS complet ===");
+        for (Sommet s : parcoursDFS) System.out.print(s.id + " ");
+        System.out.println("\n====================================");
+    }
+
+    // Étape 3 : Shortcutting avec Dijkstra
+    public void optimisationParcours() {
+        Graphe g = new Graphe(graphe); // copie du graphe original
+        parcoursOptimise = Shortcutting.shortcut(parcoursDFS, new ArrayList<>(g.get_Sommets()));
+
+        // On peut ici réutiliser Itineraire.Dijkstra pour recalculer les chemins les plus courts si nécessaire
+        System.out.println("=== Parcours après Shortcutting ===");
+        for (Sommet s : parcoursOptimise) System.out.print(s.id + " ");
+        System.out.println("\n====================================");
+    }
+
+    // Étape 4 : découpage en tournées selon la capacité du camion
+    public List<List<Sommet>> decoupageTournées(Map<Sommet, Integer> contenances) {
+        List<List<Sommet>> tournées = new ArrayList<>();
+        List<Sommet> tourActuelle = new ArrayList<>();
+        int chargeActuelle = 0;
+
+        // toujours commencer et finir au dépôt (premier sommet)
+        Sommet depot = parcoursOptimise.get(0);
+        tourActuelle.add(depot);
+
+        for (int i = 1; i < parcoursOptimise.size(); i++) {
+            Sommet s = parcoursOptimise.get(i);
+            int c = contenances.getOrDefault(s, 0);
+            if (chargeActuelle + c > capaciteCamion) {
+                // retour au dépôt et nouvelle tournée
+                tourActuelle.add(depot);
+                tournées.add(new ArrayList<>(tourActuelle));
+                tourActuelle.clear();
+                tourActuelle.add(depot);
+                chargeActuelle = 0;
+            }
+            tourActuelle.add(s);
+            chargeActuelle += c;
+        }
+
+        tourActuelle.add(depot); // retour final au dépôt
+        tournées.add(tourActuelle);
+
+        System.out.println("=== Tournées découpées selon capacité camion ===");
+        int numTour = 1;
+        for (List<Sommet> t : tournées) {
+            System.out.print("T" + numTour + " : ");
+            for (Sommet s : t) System.out.print(s.id + " ");
+            System.out.println();
+            numTour++;
+        }
+        System.out.println("====================================");
+
+        return tournées;
+    }
+
+    // --- Méthodes auxiliaires ---
+    private List<Sommet> extraireSommetsACM(List<Arete> acm) {
+        Set<Sommet> set = new LinkedHashSet<>();
+        for (Arete a : acm) {
+            set.add(a.depart);
+            set.add(a.destination);
+        }
+        return new ArrayList<>(set);
+    }
+
+    private List<Sommet> convertirIndicesEnSommets(List<Integer> indices, List<Sommet> liste) {
+        List<Sommet> result = new ArrayList<>();
+        for (int idx : indices) result.add(liste.get(idx));
+        return result;
+    }
+}
+
+
+
+
+/*
+import java.io.*;
 import java.util.*;
 
 public class MST{
