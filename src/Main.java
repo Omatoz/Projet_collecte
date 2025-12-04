@@ -4,5 +4,3 @@ public class Main {
         m.lancer();
     }
 }
-
-

@@ -1,4 +1,4 @@
-import java.io.*;
+/*import java.io.*;
 import java.util.*;
 
 public class MST{
@@ -126,3 +126,4 @@ public class MST{
         return poidsTotal;
     }
 }
+*/
