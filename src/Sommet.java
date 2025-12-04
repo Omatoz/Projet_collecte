@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class  Sommet {
-    public  String id;
+    public String id;
     public List<Arete> aretes = new ArrayList<>();
 
     // constructeur
@@ -9,8 +9,8 @@ public class  Sommet {
         this.id = id;
     }
 
-    public void ajouter_arete(Sommet destination, int poids, int type) {
-        this.aretes.add(new Arete(destination, poids, type));
+    public void ajouter_arete(Sommet depart, Sommet destination, int poids, int type) {
+        this.aretes.add(new Arete(depart, destination, poids, type));
     }
 
     @Override

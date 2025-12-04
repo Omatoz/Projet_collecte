@@ -20,8 +20,9 @@ public class Graphe {
         for (Sommet s : autre.get_Sommets()) {
             Sommet sourceCopie = this.getSommet(s.id);
             for (Arete a : s.aretes) {
+                Sommet departCopie = this.getSommet(a.depart.id);
                 Sommet destCopie = this.getSommet(a.destination.id);
-                sourceCopie.ajouter_arete(destCopie, a.poids,  a.type);
+                sourceCopie.ajouter_arete(departCopie, destCopie, a.poids,  a.type);
             }
         }
     }
@@ -93,7 +94,7 @@ public class Graphe {
         Sommet destination = getSommet(idDestination);
         if (source != null && destination != null) {
             // On ajoute un seul et unique arc
-            source.ajouter_arete(destination, poids, typeOrigine);
+            source.ajouter_arete(source, destination, poids, typeOrigine);
         }
     }
 
@@ -109,11 +110,11 @@ public class Graphe {
         switch (type) {
             case 1: // une voie deux sens (non orienté)
             case 3: // Double voies differentes  (2 orientés)
-                source.ajouter_arete(destination, poids, type); // ajout arete des deux sens
-                destination.ajouter_arete(source, poids, type);
+                source.ajouter_arete(source, destination, poids, type); // ajout arete des deux sens
+                destination.ajouter_arete(destination, source, poids, type);
                 break;
             case 2: // sens unique  (orienté)
-                source.ajouter_arete(destination, poids, type);
+                source.ajouter_arete(source, destination, poids, type);
                 break;
         }
 
