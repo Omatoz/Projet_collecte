@@ -213,7 +213,7 @@ public class Postier {
 
             if (!existe) {
                 int poids = 1;
-                graphe.ajouter_Arc(s1.id, s2.id, poids, 2);
+                graphe.ajouter_Rues(s1.id, s2.id, poids, 2);
                 System.out.println("Arête de réparation ajoutée : " + s1.id + " -> " + s2.id);
             }
         }

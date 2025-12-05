@@ -2,85 +2,71 @@ import java.util.*;
 import java.io.*;
 
 public class Graphe {
+
     private Map<String, Sommet> sommets = new HashMap<>();
 
-    // constructeur
-    public Graphe(String fichier_sommets, String fichier_aretes) throws FileNotFoundException {
-        charger_Sommets(fichier_sommets);
-        charger_Rues(fichier_aretes);
+    public Graphe(String fichierSommets, String fichierAretes) throws FileNotFoundException {
+        charger_Sommets(fichierSommets);
+        charger_Rues(fichierAretes);
     }
 
-    // constructeur copie
+    // Constructeur de copie
     public Graphe(Graphe autre) {
-        // Copie des sommets
         for (Sommet s : autre.get_Sommets()) {
             this.ajouter_Sommet(s.id);
         }
-        // Copie des arêtes
         for (Sommet s : autre.get_Sommets()) {
-            Sommet sourceCopie = this.getSommet(s.id);
+            Sommet copieSource = this.getSommet(s.id);
             for (Arete a : s.aretes) {
-                Sommet departCopie = this.getSommet(a.depart.id);
-                Sommet destCopie = this.getSommet(a.destination.id);
-                sourceCopie.ajouter_arete(departCopie, destCopie, a.poids,  a.type);
+                Sommet depart = this.getSommet(a.depart.id);
+                Sommet dest = this.getSommet(a.destination.id);
+                copieSource.ajouter_arete(depart, dest, a.poids, a.type);
             }
         }
     }
 
-    // methode : charge sommets graphe
-    private void charger_Sommets(String f1) throws FileNotFoundException {
-        File fichier = new File(f1); // crée objet du fichier
+    private void charger_Sommets(String fichier) throws FileNotFoundException {
+        File f = new File(fichier);
 
-        try (Scanner scanner = new Scanner(fichier)) { // on teste ouverture fichier
-
-            if (scanner.hasNextLine()) {
-                scanner.nextLine(); // lecture + ignore en-tête
-            }
-
-            while (scanner.hasNextLine()) { // tant qu'il y a une ligne à lire
-                String ligne = scanner.nextLine(); // lecture ligne
-                if (!ligne.trim().isEmpty()) { // verification ligne non vide
-                    ajouter_Sommet(ligne.trim()); // ajout nouveau sommet
+        try (Scanner sc = new Scanner(f)) {
+            if (sc.hasNextLine()) sc.nextLine(); // en-tête
+            while (sc.hasNextLine()) {
+                String ligne = sc.nextLine().trim();
+                if (!ligne.isEmpty()) {
+                    ajouter_Sommet(ligne);
                 }
             }
         }
-        System.out.println(this.get_Sommets().size() + " sommets chargés depuis " + f1);
+        System.out.println(sommets.size() + " sommets chargés.");
     }
 
-    // methode : charge rues graphes
-    // Dans Graphe.java
-    private void charger_Rues(String nomFichier) throws FileNotFoundException {
-        File f = new File(nomFichier);
-        System.out.println(">>> LECTURE DU FICHIER : " + f.getAbsolutePath()); // VÉRIFIEZ CE CHEMIN !
+    private void charger_Rues(String fichier) throws FileNotFoundException {
+        File f = new File(fichier);
+        System.out.println(">>> Lecture : " + f.getAbsolutePath());
 
-        try (Scanner scanner = new Scanner(f)) {
-            if (scanner.hasNextLine()) scanner.nextLine();
+        try (Scanner sc = new Scanner(f)) {
+            if (sc.hasNextLine()) sc.nextLine();
+            while (sc.hasNextLine()) {
+                String ligne = sc.nextLine().trim();
+                if (ligne.isEmpty()) continue;
 
-            while (scanner.hasNextLine()) {
-                String ligne = scanner.nextLine();
-                // On ignore les lignes vides
-                if (!ligne.trim().isEmpty()) {
-                    String[] donnees = ligne.split(";");
-                    if (donnees.length == 4) {
-                        // LE TRIM() EST OBLIGATOIRE POUR EVITER LES BUGS
-                        String source = donnees[0].trim().toUpperCase();
-                        String dest = donnees[1].trim().toUpperCase();
-                        int poids = Integer.parseInt(donnees[2].trim());
-                        int type = Integer.parseInt(donnees[3].trim());
+                String[] d = ligne.split(";");
+                if (d.length != 4) continue;
 
-                        ajouter_Rues(source, dest, poids, type);
-                    }
-                }
+                String source = d[0].trim().toUpperCase();
+                String dest = d[1].trim().toUpperCase();
+                int poids = Integer.parseInt(d[2].trim());
+                int type = Integer.parseInt(d[3].trim());
+
+                ajouter_Rues(source, dest, poids, type);
             }
         }
-        System.out.println("Rues chargées.");
     }
 
     public void ajouter_Sommet(String id) {
         sommets.putIfAbsent(id.toUpperCase(), new Sommet(id.toUpperCase()));
     }
 
-    //getters
     public Sommet getSommet(String id) {
         return sommets.get(id.toUpperCase());
     }
@@ -89,38 +75,31 @@ public class Graphe {
         return sommets.values();
     }
 
-    public void ajouter_Arc(String idSource, String idDestination, int poids, int typeOrigine) {
-        Sommet source = getSommet(idSource);
-        Sommet destination = getSommet(idDestination);
-        if (source != null && destination != null) {
-            // On ajoute un seul et unique arc
-            source.ajouter_arete(source, destination, poids, typeOrigine);
-        }
-    }
+    public void ajouter_Rues(String depart, String arrivee, int poids, int type) {
+        Sommet s = getSommet(depart);
+        Sommet d = getSommet(arrivee);
 
-    public void ajouter_Rues(String  depart, String arrivee, int poids, int type) {
-        Sommet source = getSommet(depart);
-        Sommet destination = getSommet(arrivee);
-
-        if (source == null || destination == null) {
-            System.err.println("Erreur !!! Source ou Destination inconnue !!!");
+        if (s == null || d == null) {
+            System.err.println("Erreur : sommet introuvable !");
             return;
         }
 
         switch (type) {
-            case 1: // une voie deux sens (non orienté)
-            case 3: // Double voies differentes  (2 orientés)
-                source.ajouter_arete(source, destination, poids, type); // ajout arete des deux sens
-                destination.ajouter_arete(destination, source, poids, type);
+            case 1:
+            case 3:  // double sens
+                s.ajouter_arete(s, d, poids, type);
+                d.ajouter_arete(d, s, poids, type);
                 break;
-            case 2: // sens unique  (orienté)
-                source.ajouter_arete(source, destination, poids, type);
+
+            case 2:  // sens unique
+                s.ajouter_arete(s, d, poids, type);
                 break;
         }
-
     }
+}
 
-    // stockage en mémoire vive (matrice d'adjacence)
+
+// stockage en mémoire vive (matrice d'adjacence)
     /*public void afficherGraphe(){
         List<String> listeSommets = new ArrayList<>(sommets.keySet());
         Collections.sort(listeSommets);
@@ -156,6 +135,6 @@ public class Graphe {
         }
     }
      */
-}
+
 
 

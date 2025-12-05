@@ -1,77 +1,45 @@
 import java.util.*;
 
 public class DFS {
-    //tableaux car attributs pour chaque sommets
-    private int[] marque;
-    private String[] predecesseur;
-    private int[] distance;
-    private List<List<Integer>> sommetsAdjacents; //liste des sommets adjacents de la liste de tous les sommets
-    private List<Integer> sommetsGraphe;
-    private List<Integer> parcoursComplet;
 
-    //getters
-    public int[] getMarque(){
-        return marque;
-    }
-    public String[] getPredecesseur(){
-        return predecesseur;
-    }
-    public int[] getDistance(){
-        return distance;
-    }
-    public List<List<Integer>> getSommetsAdjacents(){
-        return sommetsAdjacents;
-    }
-    public List<Integer> getSommetsGraphe(){
-        return sommetsGraphe;
-    }
-    public List<Integer> getParcoursComplet(){
-        return parcoursComplet;
-    }
+    private List<List<Integer>> adj;
+    private boolean[] visite;
+    private List<Integer> parcours;
 
-    public DFS(int nbSommets){ //constructeur
-        marque = new int[nbSommets];
-        predecesseur = new String[nbSommets];
-        distance = new int[nbSommets];
-        sommetsAdjacents = new ArrayList<>();
-        sommetsGraphe = new ArrayList<>();
-        parcoursComplet = new ArrayList<>();
-        for (int i=0; i<nbSommets; i++){     //pour chaque sommet on creer une liste avec ses sommets adjacents
-            sommetsAdjacents.add(new ArrayList<>());
+    public DFS(int nbSommets) {
+        adj = new ArrayList<>();
+        for (int i = 0; i < nbSommets; i++) {
+            adj.add(new ArrayList<>());
         }
+        visite = new boolean[nbSommets];
+        parcours = new ArrayList<>();
     }
 
-    public void ajouterArete(int sommetDepart, int sommetArrivee){
-        sommetsAdjacents.get(sommetDepart).add(sommetArrivee);
-        sommetsAdjacents.get(sommetArrivee).add(sommetDepart);
+    public void ajouterArete(int u, int v) {
+        adj.get(u).add(v);
+        adj.get(v).add(u); // non orienté pour ACM
     }
 
-    public void dfsRecursif(int sommet){
-        parcoursComplet.add(sommet);
-        for(int successeur : sommetsAdjacents.get(sommet)){ //on parcours tous les sucesseurs du sommet qu'on explore
-            if(marque[successeur] == 0){  //verifie si sommet pas encore marqué
-                marque[successeur] = 1;  //on marque le sommet
-                predecesseur[successeur] = String.valueOf(sommet);
-                distance[successeur] = distance[sommet] + 1;
-                dfsRecursif(successeur);   //appel récursif
-                parcoursComplet.add(successeur);
+    public void dfs(int sommet) {
+        Arrays.fill(visite, false);
+        parcours.clear();
+        explorer(sommet);
+    }
+
+    private void explorer(int u) {
+        visite[u] = true;
+        parcours.add(u);
+
+        for (int v : adj.get(u)) {
+            if (!visite[v]) {
+                explorer(v);
+                parcours.add(u);  // retour (comme sur ton exemple)
             }
         }
-
     }
 
-    public void dfs(int sommetInitiale){
-        //attributs avant d'être parcouru
-        Arrays.fill(marque, 0);
-        Arrays.fill(predecesseur, "-");
-        Arrays.fill(distance, 999);  //infini
-
-        //on initialise attributs du sommet qu'on découvre
-        marque[sommetInitiale] = 0;
-        distance[sommetInitiale] = 0;
-        predecesseur[sommetInitiale] = "-";
-
-        dfsRecursif(sommetInitiale);    //appel récursif
+    public List<Integer> getParcoursComplet() {
+        return parcours;
     }
-
 }
+
