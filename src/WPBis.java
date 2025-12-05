@@ -18,6 +18,9 @@ public class WPBis {
         this.nbJour = 0;
         this.capaciteCamion = capaciteCamion;
     }
+    public int getNbJour() {
+        return nbJour;
+    }
 
     private boolean SommetsNonColores(){
         for (Boolean b : colore.values()){

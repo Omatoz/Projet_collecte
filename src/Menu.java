@@ -96,7 +96,7 @@ public class Menu {
         if (hypothese == 1) {
             executer_p4("[1] Hypothèse 1 : Collecte des secteurs (Welsh et Powell)");
         } else {
-            executer_p4("[2] Hypothèse 2 : Collecte des secteurs sans nuisance et en tenant en compte les quantités et les capacités de collecte");
+            executer_p5("[2] Hypothèse 2 : Collecte des secteurs sans nuisance et en tenant en compte les quantités et les capacités de collecte");
         }
         attente();
     }
@@ -305,7 +305,7 @@ public class Menu {
         }
     }
     // Execution du theme 3
-    // Méthode pour exécuter la problématique du Thème 3
+    // Méthode pour exécuter l'hypothese 1 du Thème 3
     private void executer_p4(String titre) {
         System.out.println("\n" + titre);
 
@@ -337,6 +337,71 @@ public class Menu {
         wp.afficherCouleurs();
 
         System.out.println("\nNombre total de créneaux nécessaires : " + wp.getNbCouleurs());
+    }
+
+    // Méthode pour l'hypothèse 2 du thème 3
+    private void executer_p5(String titre) {
+        System.out.println("\n" + titre);
+
+        // Choix du graphe pour la planification
+        System.out.println("Veuillez choisir un graphe pour la planification :");
+        System.out.println("  [1] Graphe 1");
+        System.out.println("  [2] Graphe 2");
+        System.out.print("Saisir votre choix : ");
+        int grapheChoisi = options(1, 2);
+
+        // Fichiers de sommets et d'arêtes
+        String f_sommets = "ressources/sommets.txt"; // commun aux deux graphes
+        String f_aretes = "ressources/aretes_t3_h1_ho1." + grapheChoisi + ".txt";
+        String f_quantites = "ressources/sommets_t3_h2.txt";
+        // Chargement du graphe
+        Graphe g = null;
+        try {
+            g = new Graphe(f_sommets, f_aretes);
+            System.out.println("\nGraphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
+        } catch (Exception e) {
+            System.err.println("!!! Erreur de chargement !!! " + e.getMessage());
+            return;
+        }
+
+        // Lecture des quantités depuis le fichier
+        Map<Sommet, Integer> quantites = new HashMap<>();
+        try (Scanner scanner = new Scanner(new File(f_quantites))) {
+            while (scanner.hasNextLine()) {
+                String ligne = scanner.nextLine().trim();
+                if (!ligne.isEmpty()) {
+                    String[] parts = ligne.split(";");
+                    if (parts.length == 2) {
+                        String id = parts[0].trim().toUpperCase();
+                        int q = Integer.parseInt(parts[1].trim());
+                        Sommet s = g.getSommet(id);
+                        if (s != null) {
+                            quantites.put(s, q);
+                        } else {
+                            System.err.println("Sommet inconnu dans le graphe : " + id);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lecture fichier quantités : " + e.getMessage());
+            return;
+        }
+
+        // Demande de la capacité du camion
+        System.out.print("Entrez la capacité maximale du camion : ");
+        int capaciteCamion = options(1, 1000);
+
+        // Création de l'instance WelshPowellHypothese2
+        WPBis wp = new WPBis();
+
+        // Application de l'algorithme et affichage du planning
+        System.out.println("\nApplication de l'algorithme Welsh et Powell pour l'Hypothèse 2 :");
+        wp.coloration(quantites);
+        wp.afficherPlanning(quantites);
+
+        System.out.println("\nNombre total de jours nécessaires : " + wp.getNbJour());
+
     }
 
 
