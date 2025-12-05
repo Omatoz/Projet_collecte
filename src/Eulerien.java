@@ -93,7 +93,7 @@ public class Eulerien {
             // Le sommet est à problème s'il ne respecte pas L'UNE des deux conditions.
             if (!estPairNonOriente || !estEquilibreOriente) {
                 sommetsProbleme.add(s);
-                // On peut ajouter un message de debug pour comprendre pourquoi
+                // debug
                 /*System.out.println("DEBUG: Sommet " + s.id + " à problème. " +
                         "Équilibre Orienté: " + estEquilibreOriente +
                         " (Entrant: " + degreEntrantOriente + ", Sortant: " + degreSortantOriente + "). " +

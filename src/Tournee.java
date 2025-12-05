@@ -31,6 +31,16 @@ public class Tournee {
         }
     }
 
+    public static String formatChemin(List<Sommet> chemin) {
+        if (chemin == null || chemin.isEmpty()) return "(vide)";
+
+        StringJoiner sj = new StringJoiner(" -> ");
+        for (Sommet s : chemin) {
+            sj.add(s.id);
+        }
+        return sj.toString();
+    }
+
     // calcul de la tournée
     public static TSP calculer_tournee(Graphe graphe, Sommet depot, List<Sommet> a_visiter) {
         if (a_visiter == null || a_visiter.isEmpty()) {
@@ -105,7 +115,7 @@ public class Tournee {
         // On vérifie si retour-dépôt possible
         if (distance_retour == Integer.MAX_VALUE) {
             System.out.println("Retour au " + depot.id + " (distance: IMPOSSIBLE)");
-            System.out.println("ERREUR CRITIQUE !!! La tournée peut être effectuée, mais le retour au dépôt est impossible.");
+            System.out.println("ERREUR !!! La tournée peut être effectuée, mais le retour au dépôt est impossible.");
             return new TSP(ordre_final, -1, null, false);
         }
 

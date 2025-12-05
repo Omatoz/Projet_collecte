@@ -50,7 +50,6 @@ public class Hierholzer { // Déclaration de la classe
     }
 
     public static void cycle(Graphe g, boolean estOriente) {
-        System.out.println("[HIERHOLZER]");
         try {
             List<Sommet> cycle = Hierholzer.trouverCycleEulerien(g, estOriente);
 

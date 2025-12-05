@@ -180,12 +180,12 @@ public class Menu {
 
         System.out.println("\n[PHASE 3] : RESULTATS\n");
         if (resultat.reussite()) {
-            System.out.println("REUSSITE : Tournée calculée avec succès !!!");
-            System.out.println("Ordre de visite optimisé : " + resultat.getOrdre());
-            System.out.println("Distance totale de la tournée : " + resultat.getDistance_totale());
-            System.out.println("Chemin complet : " + resultat.getChemin_final());
+            System.out.println("REUSSITE !!! Tournée calculée avec succès !!!");
+            System.out.println("Ordre de visite optimisé : " + Tournee.formatChemin(resultat.getOrdre()));
+            System.out.println("Distance totale : " + resultat.getDistance_totale());
+            System.out.println("Chemin complet : " + Tournee.formatChemin(resultat.getChemin_final()));
         } else {
-            System.out.println("ÉCHEC : La tournée est irréalisable !!!");
+            System.out.println("ÉCHEC !!! La tournée est irréalisable !!!");
             System.out.println("Tournée effectuée : " + resultat.getOrdre());
         }
     }
@@ -237,6 +237,7 @@ public class Menu {
         List<Sommet> problemesMixtes = Eulerien.trouverSommetsImpairsMixtes(g);
 
         boolean test = Eulerien.estMixteEulérien(g);
+
         if (cas == 1) {
             if (hypothese == 1) {
                 if (sommetsImpairs.isEmpty()) {
@@ -293,7 +294,7 @@ public class Menu {
                     System.out.println("Le graphe n'est pas Eulérien.");
                     Postier.lancer(g, hypothese);
                 }
-            } else if (hypothese == 3) {
+            } /*else if (hypothese == 3) {
                 if (sommets_non_equilibres.isEmpty()) {
                     System.out.println("SUCCÈS : Le graphe est Eulérien.");
                     Hierholzer.cycle(g, true);
@@ -301,7 +302,7 @@ public class Menu {
                     System.out.println("Le graphe n'est pas Eulérien.");
                     Postier.lancer(g, hypothese);
                 }
-            }
+            }*/
         }
     }
     // Execution du theme 3
