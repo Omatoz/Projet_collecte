@@ -116,7 +116,7 @@ public class Hierholzer { // Déclaration de la classe
             for (Arete a : s1.aretes) { if (a.destination.equals(s2)) { poids = a.poids; break; } }
 
             // On duplique avec des arcs orientés car le graphe final sera traité comme orienté
-            grapheRepare.ajouter_Arc(s1.id, s2.id, poids, 2);
+            grapheRepare.ajouter_Rues(s1.id, s2.id, poids, 2);
         }
 
         System.out.println("Le graphe est maintenant équilibré. Lancement de Hierholzer en mode orienté...");
