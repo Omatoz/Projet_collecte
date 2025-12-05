@@ -10,12 +10,17 @@ public class MST {
     private List<Sommet> parcoursOptimise;
     private int capaciteCamion;
 
+    public Graphe getGraphe(){
+        return graphe;
+    }
+
+
     public MST(String fichierSommets, String fichierAretes, int capaciteCamion) throws FileNotFoundException {
         this.graphe = new Graphe(fichierSommets, fichierAretes);
         this.capaciteCamion = capaciteCamion;
     }
 
-    // Étape 1 : calcul de l'arbre couvrant minimal avec Prim
+    // calcul arbre couvrant minimal avec Prim
     public void calculACM() {
         List<Sommet> listeSommets = new ArrayList<>(graphe.get_Sommets());
         this.acm = Prim.arbreCouvrantMinimal(listeSommets);
@@ -26,7 +31,7 @@ public class MST {
         System.out.println("====================================");
     }
 
-    // Étape 2 : DFS sur l'arbre couvrant pour obtenir un ordre de visite
+    // DFS sur arbre couvrant pour obtenir ordre de visite
     public void parcoursDFS() {
         List<Sommet> sommetsACM = extraireSommetsACM(acm);
         dfs = new DFS(sommetsACM.size());
@@ -40,7 +45,7 @@ public class MST {
             dfs.ajouterArete(u, v);
         }
 
-        dfs.dfs(0); // départ depuis le premier sommet
+        dfs.dfs(0); // départ sommet A
         parcoursDFS = convertirIndicesEnSommets(dfs.getParcoursComplet(), sommetsACM);
 
         System.out.println("=== Parcours DFS complet ===");
@@ -48,24 +53,22 @@ public class MST {
         System.out.println("\n====================================");
     }
 
-    // Étape 3 : Shortcutting avec Dijkstra
+    // shortcutting avec Dijkstra
     public void optimisationParcours() {
-        Graphe g = new Graphe(graphe); // copie du graphe original
+        Graphe g = new Graphe(graphe);
         parcoursOptimise = Shortcutting.shortcut(parcoursDFS, new ArrayList<>(g.get_Sommets()));
 
-        // On peut ici réutiliser Itineraire.Dijkstra pour recalculer les chemins les plus courts si nécessaire
         System.out.println("=== Parcours après Shortcutting ===");
         for (Sommet s : parcoursOptimise) System.out.print(s.id + " ");
         System.out.println("\n====================================");
     }
 
-    // Étape 4 : découpage en tournées selon la capacité du camion
-    public List<List<Sommet>> decoupageTournées(Map<Sommet, Integer> contenances) {
-        List<List<Sommet>> tournées = new ArrayList<>();
+    // tournées selon la capacité du camion
+    public List<List<Sommet>> decoupageTournees(Map<Sommet, Integer> contenances) {
+        List<List<Sommet>> tournees = new ArrayList<>();
         List<Sommet> tourActuelle = new ArrayList<>();
         int chargeActuelle = 0;
 
-        // toujours commencer et finir au dépôt (premier sommet)
         Sommet depot = parcoursOptimise.get(0);
         tourActuelle.add(depot);
 
@@ -73,9 +76,8 @@ public class MST {
             Sommet s = parcoursOptimise.get(i);
             int c = contenances.getOrDefault(s, 0);
             if (chargeActuelle + c > capaciteCamion) {
-                // retour au dépôt et nouvelle tournée
                 tourActuelle.add(depot);
-                tournées.add(new ArrayList<>(tourActuelle));
+                tournees.add(new ArrayList<>(tourActuelle));
                 tourActuelle.clear();
                 tourActuelle.add(depot);
                 chargeActuelle = 0;
@@ -84,12 +86,12 @@ public class MST {
             chargeActuelle += c;
         }
 
-        tourActuelle.add(depot); // retour final au dépôt
-        tournées.add(tourActuelle);
+        tourActuelle.add(depot);
+        tournees.add(tourActuelle);
 
         System.out.println("=== Tournées découpées selon capacité camion ===");
         int numTour = 1;
-        for (List<Sommet> t : tournées) {
+        for (List<Sommet> t : tournees) {
             System.out.print("T" + numTour + " : ");
             for (Sommet s : t) System.out.print(s.id + " ");
             System.out.println();
@@ -97,7 +99,7 @@ public class MST {
         }
         System.out.println("====================================");
 
-        return tournées;
+        return tournees;
     }
 
     // --- Méthodes auxiliaires ---
@@ -116,6 +118,7 @@ public class MST {
         return result;
     }
 }
+
 
 
 

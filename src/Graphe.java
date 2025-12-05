@@ -22,7 +22,7 @@ public class Graphe {
             for (Arete a : s.aretes) {
                 Sommet departCopie = this.getSommet(a.depart.id);
                 Sommet destCopie = this.getSommet(a.destination.id);
-                sourceCopie.ajouter_arete(departCopie, destCopie, a.poids,  a.type);
+                sourceCopie.ajouter_arete(departCopie, destCopie, a.poids, a.type);
             }
         }
     }
@@ -89,6 +89,11 @@ public class Graphe {
         return sommets.values();
     }
 
+    public Map<String, Sommet> getSommets() {
+        return sommets;
+    }
+
+
     public void ajouter_Arc(String idSource, String idDestination, int poids, int typeOrigine) {
         Sommet source = getSommet(idSource);
         Sommet destination = getSommet(idDestination);
@@ -98,7 +103,7 @@ public class Graphe {
         }
     }
 
-    public void ajouter_Rues(String  depart, String arrivee, int poids, int type) {
+    public void ajouter_Rues(String depart, String arrivee, int poids, int type) {
         Sommet source = getSommet(depart);
         Sommet destination = getSommet(arrivee);
 
@@ -119,6 +124,7 @@ public class Graphe {
         }
 
     }
+}
 
     // stockage en mémoire vive (matrice d'adjacence)
     /*public void afficherGraphe(){
@@ -156,6 +162,6 @@ public class Graphe {
         }
     }
      */
-}
+
 
 
