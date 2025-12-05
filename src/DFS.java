@@ -7,6 +7,8 @@ public class DFS {
     private int[] distance;
     private List<List<Integer>> sommetsAdjacents; //liste des sommets adjacents de la liste de tous les sommets
     private List<Integer> sommetsGraphe;
+    private List<Integer> parcoursComplet;
+
     //getters
     public int[] getMarque(){
         return marque;
@@ -23,6 +25,9 @@ public class DFS {
     public List<Integer> getSommetsGraphe(){
         return sommetsGraphe;
     }
+    public List<Integer> getParcoursComplet(){
+        return parcoursComplet;
+    }
 
     public DFS(int nbSommets){ //constructeur
         marque = new int[nbSommets];
@@ -30,6 +35,7 @@ public class DFS {
         distance = new int[nbSommets];
         sommetsAdjacents = new ArrayList<>();
         sommetsGraphe = new ArrayList<>();
+        parcoursComplet = new ArrayList<>();
         for (int i=0; i<nbSommets; i++){     //pour chaque sommet on creer une liste avec ses sommets adjacents
             sommetsAdjacents.add(new ArrayList<>());
         }
@@ -41,12 +47,14 @@ public class DFS {
     }
 
     public void dfsRecursif(int sommet){
+        parcoursComplet.add(sommet);
         for(int successeur : sommetsAdjacents.get(sommet)){ //on parcours tous les sucesseurs du sommet qu'on explore
             if(marque[successeur] == 0){  //verifie si sommet pas encore marqué
                 marque[successeur] = 1;  //on marque le sommet
                 predecesseur[successeur] = String.valueOf(sommet);
                 distance[successeur] = distance[sommet] + 1;
                 dfsRecursif(successeur);   //appel récursif
+                parcoursComplet.add(successeur);
             }
         }
 
@@ -64,31 +72,6 @@ public class DFS {
         predecesseur[sommetInitiale] = "-";
 
         dfsRecursif(sommetInitiale);    //appel récursif
-    }
-
-
-
-    //shortcutting
-
-    public void shortcutRecursif(int sommetDepart, boolean[] cheminShortcutting, List<Integer> chemin){
-        if(!cheminShortcutting[sommetDepart]){  //verfie si deja ajouté à liste
-            cheminShortcutting[sommetDepart] = true;  //on parcours seulement si pas encore ajouté
-            chemin.add(sommetDepart);   //on ajoute
-        }
-        for(int sucesseur : sommetsAdjacents.get(sommetDepart)){   //on parcours les successeurs du sommet
-            if(!cheminShortcutting[sucesseur]){   //verifie si pas encore parcouru
-                shortcutRecursif(sucesseur, cheminShortcutting, chemin);  //recursivité
-            }
-        }
-    }
-
-
-    public List<Integer> shortcutting(int sommetDepart){
-        List<Integer> chemin = new ArrayList<>();  //on stocke sommets de parcours du chemin
-        boolean[] cheminShortcutting = new boolean[marque.length];    //on marque les sommets déjà parcouru
-        shortcutRecursif(sommetDepart, cheminShortcutting, chemin);
-
-        return chemin;
     }
 
 }
