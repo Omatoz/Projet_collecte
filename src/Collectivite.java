@@ -85,11 +85,11 @@ public class Collectivite {
 
         // Création de l'instance WelshPowell et coloration
         WelshPowell wp = new WelshPowell(g);
-        System.out.println("\nApplication de l'algorithme Welsh et Powell :");
+        System.out.println("\nApplication de l'algorithme de Welsh et Powell :");
         wp.coloration();
         wp.afficherCouleurs();
 
-        System.out.println("\nNombre total de créneaux nécessaires : " + wp.getNbCouleurs());
+        System.out.println("\nNombre total de jours de ramassage nécessaires : " + wp.getNbCouleurs());
     }
 
     // Méthode pour l'hypothèse 2 du thème 3

@@ -29,15 +29,27 @@ public class WelshPowell {
     }
 
     public void afficherCouleurs(){
+        // Affichage de la liste de coloration par sommet/ secteur
         for (Sommet s : g.get_Sommets()){
-            System.out.println("Sommet: " + s.id + "est de couleur " + couleur.get(s));
+            System.out.println("Sommet " + s.id + " est de couleur " + couleur.get(s));
+        }
+        System.out.println("\n --- Recapitulatif du PLanning (Une Couleur = Un Jour) ---");
+        for(int j = 1; j < nbCouleur; j++){
+            System.out.println("Jour " + j + " (Couleur " + j + ") : ");
+
+            ArrayList<String> secteurDuJour = new ArrayList<>(); //Gestion des virgules
+            for (Sommet s : g.get_Sommets()){
+                if (couleur.get(s) != null && couleur.get(s) == j){
+                    secteurDuJour.add(String.valueOf(s.id));
+                }
+            }
+            System.out.println(secteurDuJour);
         }
     }
 
     // Méthode de coloration
     public void coloration () {
-        SommetsTries.addAll(g.get_Sommets());
-        // Copie des sommets du graphe
+        SommetsTries.clear();
         SommetsTries.addAll(g.get_Sommets());
         // On tri les degrés des sommets par décroissance
         Collections.sort(SommetsTries, new Comparator<Sommet>() {
