@@ -120,6 +120,20 @@ public class Collectivite {
         // Lecture des quantités depuis le fichier
         Map<Sommet, Integer> quantites = new HashMap<>();
         try (Scanner scanner = new Scanner(new File(f_quantites))) {
+            if (scanner.hasNextLine()) {
+                String premiereLigne = scanner.nextLine().trim();
+                // On ignore la ligne d'en-tête, sinon erreur de format de lecture à la compilation
+                if (premiereLigne.toLowerCase().contains("quantite")) {
+                    // on ignore
+                } else {
+                    // sinon on la traite normalement
+                    String[] parts = premiereLigne.split(";");
+                    if (parts.length == 2) {
+                        Sommet s = g.getSommet(parts[0].trim().toUpperCase());
+                        quantites.put(s, Integer.parseInt(parts[1].trim()));
+                    }
+                }
+            }
             while (scanner.hasNextLine()) {
                 String ligne = scanner.nextLine().trim();
                 if (!ligne.isEmpty()) {
@@ -146,7 +160,7 @@ public class Collectivite {
         int capaciteCamion = options(1, 1000);
 
         // Création de l'instance WelshPowellHypothese2
-        WPBis wp = new WPBis();
+        WPBis wp = new WPBis(g, capaciteCamion);
 
         // Application de l'algorithme et affichage du planning
         System.out.println("\nApplication de l'algorithme Welsh et Powell pour l'Hypothèse 2 :");

@@ -9,7 +9,7 @@ public class WPBis {
     private int nbJour;
     private int capaciteCamion;
 
-    public WPBis() {
+    public WPBis(Graphe g, int capaciteCamion) {
         this.g = g;
         this.SommetsTries = new ArrayList<>();
         this.couleur = new HashMap<>();
@@ -53,9 +53,11 @@ public class WPBis {
         capaciteJour.put(nbJour, capaciteCamion);
 
         while (SommetsNonColores()){
+            boolean PlaceSommet = false; // pour savoir si le jour a servi
             for (Sommet s : new ArrayList<>(SommetsTries)){
                 if (!colore.get(s)){
                     boolean conflit = false;
+                    // Vérification de ladjacence entre arêtes
                     for (Arete a : s.aretes) {
                         Sommet voisin = a.destination;
                         if (colore.get(voisin) && couleur.get(voisin) == nbJour) {
@@ -64,6 +66,7 @@ public class WPBis {
                         }
                     }
                     int qs = quantites.getOrDefault(s,0);
+                    // Vérifiction de la capcité du camion pour le jour en cours
                     if (qs > capaciteJour.get(nbJour)){
                         conflit = true;
                     }
@@ -71,13 +74,16 @@ public class WPBis {
                         couleur.put(s, nbJour);
                         colore.put(s, true);
                         capaciteJour.put(nbJour, capaciteJour.get(nbJour) - qs);
+                        PlaceSommet = true; // un sommet (secteur) à été attribué à un jour
                     }
                 }
             }
+            // Si aucun sommet n'a été attribué à ca jour on passe au jour suivant
+            if(!PlaceSommet) {
+                nbJour ++;
+                capaciteJour.putIfAbsent(nbJour, capaciteCamion);
+            }
         }
-
-        nbJour ++;
-        capaciteJour.putIfAbsent(nbJour, capaciteCamion);
     }
 
     public void afficherPlanning (Map<Sommet, Integer> quantites) {
