@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -65,6 +66,7 @@ public class Entreprise {
             executer_p1("|Heuristique du Plus Proche Voisin|", 2);
         } else {
             System.out.println("|Heuristique de l'Arbre Couvrant Minimal (MST)|");
+            executer_MST();
         }
         attente();
     }
@@ -349,5 +351,59 @@ public class Entreprise {
     private void attente() {
         System.out.println("\nAppuyez sur [Entrée] pour retourner au menu principal");
         scanner.nextLine();
+    }
+
+    //approche 2 thème 2
+    private void executer_MST(){
+        try {
+            //instanciation MST pour avoir sommets et aretes du graphe initial
+            MST mst = new MST("ressources/sommets.txt", "ressources/aretes_ho1.txt");
+
+            Set<String> aretesAffichees = new HashSet<>();
+            for (Sommet s : mst.getGraphe().get_Sommets()) {
+                for (Arete a : s.aretes) {
+                    String key = a.depart.id.compareTo(a.destination.id) < 0
+                            ? a.depart.id + "-" + a.destination.id
+                            : a.destination.id + "-" + a.depart.id;
+                    if (!aretesAffichees.contains(key)) {
+                        System.out.println("Arête: " + a.depart.id + "-" + a.destination.id + " (Poids = " + a.poids + ")");
+                        aretesAffichees.add(key);
+                    }
+                }
+            }
+
+            //arbre couvrant de poids minimum
+            System.out.println("-------------------------------------------------------------------------------------");
+            System.out.println(" ");
+            System.out.println("2) ARBRE COUVRANT DE POIDS MINIMAL");
+            mst.calculACM();
+            for (Arete a : mst.getAcm()) {
+                System.out.println("Arête : " + a.depart.id + "-" + a.destination.id + " (Poids = " + a.poids + ")");
+            }
+
+            //dfs sur arbre couvrant du poids minimum
+            System.out.println("-------------------------------------------------------------------------------------");
+            System.out.println(" ");
+            System.out.println("3) PARCOURS DFS : ordre de visite des points de collecte");
+            mst.parcoursDFS();
+            List<Sommet> parcoursDFS = mst.getParcoursDFS();
+
+            //shortcutting sur parcours dfs
+            System.out.println("-------------------------------------------------------------------------------------");
+            System.out.println(" ");
+            System.out.println("4) SHORTCUTTING");
+            mst.parcourShortcutting();
+            List<Sommet> parcoursShortcut = mst.getParcoursShortcut();
+
+            //decoupage tournees par rapport a la capacite du camion
+            System.out.println("-------------------------------------------------------------------------------------");
+            System.out.println(" ");
+            System.out.println("5) DECOUPAGE EN TOURNEES EN FONCTION DE LA CAPACITE ");
+            int capaciteMax = 15;   // attribut à modifier
+            mst.decouperTournees(capaciteMax);
+
+        } catch (FileNotFoundException e) {
+            System.err.println("Erreur : fichier introuvable !");
+        }
     }
 }

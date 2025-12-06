@@ -17,11 +17,11 @@ public class Prim {
 
             for (Sommet s : gPrimeTrie) {
                 // trier les arêtes pour parcours stable
-                List<Arete> arêtesTriees = new ArrayList<>(s.aretes);
-                arêtesTriees.sort(Comparator.comparingInt((Arete a) -> a.poids)
+                List<Arete> aretesTriees = new ArrayList<>(s.aretes);
+                aretesTriees.sort(Comparator.comparingInt((Arete a) -> a.poids)
                         .thenComparing(a -> a.destination.id));
 
-                for (Arete a : arêtesTriees) {
+                for (Arete a : aretesTriees) {
                     Sommet u = a.depart;
                     Sommet v = a.destination;
                     boolean uIn = gPrime.contains(u);

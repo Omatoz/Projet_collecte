@@ -18,6 +18,10 @@ public class MST {
         return graphe;
     }
 
+    public List<Arete> getAcm() {
+        return acm;
+    }
+
     public List<Sommet> getShortcut(){
         return shortcut;
     }
@@ -26,50 +30,31 @@ public class MST {
         return tournees;
     }
 
-    // CALCUL ACM AVEC PRIM
     public void calculACM() {
         List<Sommet> liste = new ArrayList<>(graphe.get_Sommets());
         acm = Prim.arbreCouvrantMinimal(liste);
-
-        System.out.println("=== ACM (Prim) ===");
-        for (Arete a : acm) {
-            System.out.println(a.depart.id + " - " + a.destination.id);
-        }
     }
 
-    // --- DFS UNIQUEMENT SUR L’ACM ---
     public void parcoursDFS() {
-
-        // 1. sommets présents dans l’ACM
         Set<Sommet> set = new LinkedHashSet<>();
         for (Arete a : acm) {
             set.add(a.depart);
             set.add(a.destination);
         }
         List<Sommet> sommetsACM = new ArrayList<>(set);
-
-        // 2. mapping Sommet → index
         Map<Sommet, Integer> index = new HashMap<>();
         for (int i = 0; i < sommetsACM.size(); i++) {
             index.put(sommetsACM.get(i), i);
         }
-
-        // 3. DFS construit uniquement avec les arêtes ACM
         dfs = new DFS(sommetsACM.size());
         for (Arete a : acm) {
             dfs.ajouterArete(index.get(a.depart), index.get(a.destination));
         }
-
-        // 4. lancement DFS depuis A
         dfs.dfs(index.get(graphe.getSommet("A")));
-
-        // 5. conversion indices → Sommet
         parcoursDFS = new ArrayList<>();
         for (int idx : dfs.getParcoursComplet()) {
             parcoursDFS.add(sommetsACM.get(idx));
         }
-
-        System.out.println("=== DFS sur ACM ===");
         for (Sommet s : parcoursDFS) System.out.print(s.id + " ");
         System.out.println();
     }
@@ -79,17 +64,13 @@ public class MST {
     }
 
     public void parcourShortcutting() {
-
         if (parcoursDFS == null) {
-            System.err.println("Erreur : DFS non encore calculé !");
+            System.err.println("Erreur : DFS pas calculé !");
             return;
         }
 
         List<Sommet> listeSommets = new ArrayList<>(graphe.get_Sommets());
-
         this.shortcut = Shortcutting.shortcut(parcoursDFS);
-
-        System.out.println("=== Chemin après Shortcutting ===");
         for (Sommet s : shortcut) System.out.print(s.id + " ");
         System.out.println();
     }
@@ -130,9 +111,9 @@ public class MST {
             // si la capacité serait dépassée, terminer la tournée
             if (chargeCourante + contenance > capaciteMax) {
                 currentTournee.add(depot); // retour au dépôt
-                System.out.print("Tournée : ");
-                for (Sommet s : currentTournee) System.out.print(s.id + " → ");
-                System.out.println(" | Poids total : " + poidsTournee);
+                System.out.print("Sommets de la tournée : ");
+                for (Sommet s : currentTournee) System.out.print(s.id + " ");
+                System.out.println(" -> Poids total = " + poidsTournee);
 
                 tournees.add(new ArrayList<>(currentTournee));
                 currentTournee.clear();
@@ -146,12 +127,11 @@ public class MST {
             poidsTournee += contenance;
         }
 
-        // terminer la dernière tournée
         if (!currentTournee.isEmpty() && !currentTournee.get(currentTournee.size() - 1).equals(depot)) {
             currentTournee.add(depot);
-            System.out.print("Tournée : ");
-            for (Sommet s : currentTournee) System.out.print(s.id + " → ");
-            System.out.println(" | Poids total : " + poidsTournee);
+            System.out.print("Sommets de la tournée : ");
+            for (Sommet s : currentTournee) System.out.print(s.id + " ");
+            System.out.println(" -> Poids total = " + poidsTournee);
 
             tournees.add(new ArrayList<>(currentTournee));
         }
