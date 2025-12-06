@@ -157,7 +157,7 @@ public class Collectivite {
 
         // Demande de la capacité du camion
         System.out.print("Entrez la capacité maximale du camion : ");
-        int capaciteCamion = options(1, 1000);
+        int capaciteCamion = options(13, 1000);
 
         // Création de l'instance WelshPowellHypothese2
         WPBis wp = new WPBis(g, capaciteCamion);

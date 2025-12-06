@@ -34,13 +34,13 @@ public class WPBis {
         SommetsTries.clear(); // pour s'assurer qu'il n'y a pas d'anciens sommets
         SommetsTries.addAll(g.get_Sommets()); // copie des sommets du graphe
 
-// Tri des sommets par ordre décroissant de degré (nombre d'arêtes)
+         // Tri des sommets par ordre décroissant en terme de quantité de chaque secteur / de la pondération du sommet
         Collections.sort(SommetsTries, new Comparator<Sommet>() {
             @Override
             public int compare(Sommet s1, Sommet s2) {
-                int deg1 = s1.aretes.size();
-                int deg2 = s2.aretes.size();
-                return Integer.compare(deg2, deg1); // décroissant
+                int q1 = quantites.getOrDefault(s1,0);
+                int q2 = quantites.getOrDefault(s2,0);
+                return Integer.compare(q1, q2); // tri décroissant
             }
         });
 
