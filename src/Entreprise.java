@@ -73,12 +73,31 @@ public class Entreprise {
     private void executer_p1(String titre, int theme) {
         affichage_titre1(theme, titre);
         int hypothese = choix_hypothese();
-        Graphe g = charger_graphe1(hypothese);
+        int graphe_test = choix_graphe();
+        Graphe g = charger_graphe1(hypothese, graphe_test);
         if (g == null) {
             return;
         }
 
-        Sommet depot = g.getSommet("A");
+        Sommet depot = null;
+
+        if (graphe_test == 1) {
+            depot = g.getSommet("A");
+        } else if (graphe_test == 2) {
+            System.out.println("Choisir le sommet de dépôt parmi N1 à N100 :");
+            Scanner sc = new Scanner(System.in);
+            String choix_depot;
+            while (true) {
+                choix_depot = sc.nextLine().trim();
+                if (g.getSommet(choix_depot) != null) {
+                    depot = g.getSommet(choix_depot);
+                    break;
+                } else {
+                    System.out.println("Sommet invalide, réessayez :");
+                }
+            }
+        }
+
         if (depot == null) {
             System.err.println("!!! ERREUR CRITIQUE : Le sommet de dépôt 'A' n'a pas été trouvé dans le graphe.");
             return;
@@ -145,11 +164,32 @@ public class Entreprise {
         return options(1, 3);
     }
 
-    private Graphe charger_graphe1(int hypothese) {
+    private int choix_graphe() {
+        System.out.println("[CHOIX DE GRAPHE]");
+        System.out.println("\nVeuillez choisir le graphe étudié : ");
+        System.out.println("  [1] Graphe simple (fictif)");
+        System.out.println("  [2] Graphe complexe (réel)");
+        System.out.print("Votre choix : ");
+        return options(1,2);
+    }
+
+    private Graphe charger_graphe1(int hypothese, int graphe_test) {
+        String f_sommets;
+        String f_aretes;
+
         try {
-            String f_aretes = "ressources/aretes_ho" + hypothese + ".txt";
-            String f_sommets = "ressources/sommets.txt";
+            if (graphe_test == 1) {
+                f_sommets = "ressources/sommets.txt";
+                f_aretes = "ressources/aretes_ho" + hypothese + ".txt";
+            } else if (graphe_test == 2) {
+                f_sommets = "ressources/sommets_ville.txt";
+                f_aretes = "ressources/ville_ho" + hypothese + ".txt";
+            } else {
+                System.err.println("ERREUR !!! Type de graphe inconnu : " + graphe_test);
+                return null;
+            }
             return new Graphe(f_sommets, f_aretes);
+
         } catch (IOException | IllegalArgumentException e) {
             System.err.println("ERREUR !!! Impossible de construire la carte : " + e.getMessage());
             return null;
@@ -219,7 +259,7 @@ public class Entreprise {
             System.out.println("Chemin complet : " + Tournee.formatChemin(resultat.getChemin_final()));
         } else {
             System.out.println("ÉCHEC !!! La tournée est irréalisable !!!");
-            System.out.println("Tournée effectuée : " + resultat.getOrdre());
+            System.out.println("Tournée partielle effectuée : " + resultat.getOrdre());
         }
     }
 
