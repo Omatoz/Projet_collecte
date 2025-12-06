@@ -4,12 +4,11 @@ import java.util.List;
 import java.util.Set;
 
 public class Shortcutting {
-    public static List<Sommet> shortcut(List<Sommet> cheminDFS, List<Sommet> graphe) {
+    public static List<Sommet> shortcut(List<Sommet> cheminDFS) {
         List<Sommet> chemin = new ArrayList<>();
         Set<Sommet> sommetsMarques = new HashSet<>();
 
-        for (int i = 0; i < cheminDFS.size(); i++) {
-            Sommet sommet = cheminDFS.get(i);
+        for (Sommet sommet : cheminDFS) {
             if (!sommetsMarques.contains(sommet)) {
                 chemin.add(sommet);
                 sommetsMarques.add(sommet);

@@ -7,6 +7,7 @@ public class MST {
     private List<Arete> acm;
     private DFS dfs;
     private List<Sommet> parcoursDFS;
+    private List<Sommet> shortcut;
 
     public MST(String fichierSommets, String fichierAretes) throws FileNotFoundException {
         this.graphe = new Graphe(fichierSommets, fichierAretes);
@@ -14,6 +15,10 @@ public class MST {
 
     public Graphe getGraphe() {
         return graphe;
+    }
+
+    public List<Sommet> getShortcut(){
+        return shortcut;
     }
 
     // CALCUL ACM AVEC PRIM
@@ -66,6 +71,26 @@ public class MST {
 
     public List<Sommet> getParcoursDFS() {
         return parcoursDFS;
+    }
+
+    public void parcourShortcutting() {
+
+        if (parcoursDFS == null) {
+            System.err.println("Erreur : DFS non encore calculé !");
+            return;
+        }
+
+        List<Sommet> listeSommets = new ArrayList<>(graphe.get_Sommets());
+
+        this.shortcut = Shortcutting.shortcut(parcoursDFS);
+
+        System.out.println("=== Chemin après Shortcutting ===");
+        for (Sommet s : shortcut) System.out.print(s.id + " ");
+        System.out.println();
+    }
+
+    public List<Sommet> getParcoursShortcut() {
+        return shortcut;
     }
 }
 

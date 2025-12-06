@@ -49,7 +49,7 @@ public class Prim {
 
         return listeAretes;
     }
-
+}
     /*
     public static List<Arete> arbreCouvrantMinimal (List<Sommet> sommets){
         Set<Sommet> gPrime = new HashSet(); //savoir si sommets sont déjà dans sous graphe G'
@@ -92,4 +92,4 @@ public class Prim {
         }
         return listeAretes;
     }*/
-}
+
