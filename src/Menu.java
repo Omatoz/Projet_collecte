@@ -36,15 +36,11 @@ public class Menu {
     }
 
     private void afficher_menu_principal() {
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println("[SYSTÈME D'AIDE À LA GESTION ET À LA COLLECTE DES DÉCHETS]");
-        System.out.println("[1] Entreprise de collecte");
-        System.out.println("→ Optimisation des tournées, gestion des camions, organisation des points et circuits de collecte.");
-        System.out.println("[2] Collectivité territoriale");
-        System.out.println("→ Planification des jours de collecte, gestion des secteurs, équilibrage des charges et nuisances.");
-        System.out.println("[3] Quitter");
+        System.out.println("\n[SYSTÈME D'AIDE À LA GESTION ET À LA COLLECTE DES DÉCHETS]");
+        System.out.println("BONJOUR ! Veuillez vous identifiez : ");
+        System.out.println("  [1] Entreprise de collecte");
+        System.out.println("  [2] Collectivité territoriale");
+        System.out.println("  [3] Quitter");
         System.out.print("Saisir votre rôle : ");
     }
 

@@ -11,19 +11,13 @@ public class Entreprise {
 
     public void menu_entreprise() {
         while (true) {
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println("[MENU ENTREPRISE DE COLLECTE]");
-            System.out.println("[1] Ramassage au pied des habitations");
-            System.out.println("→ Tournée des encombrants (TSP)");
-            System.out.println("→ Tournée des poubelles (Cycle eulérien / Postier chinois)");
-            System.out.println("[2] Optimisation des points de collecte");
-            System.out.println("→ Heuristique du plus proche voisin");
-            System.out.println("→ Heuristique MST");
-            System.out.println("[3] Retour au menu principal");
+            System.out.println("\n[MENU ENTREPRISE DE COLLECTE]");
+            System.out.println("\nVeuillez choisir une fonctionnalité : ");
+            System.out.println("  [1] Ramassage au pied des habitations");
+            System.out.println("  [2] Optimisation des points de collecte");
+            System.out.println("  [3] Retour au menu principal");
+            System.out.print("Saisir votre choix : ");
 
-            System.out.print("\nSaisir votre choix : ");
             int theme = options(1, 3);
 
             switch (theme) {
@@ -40,69 +34,47 @@ public class Entreprise {
     }
 
     private void choix_theme1() {
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println("[MENU ENTREPRISE DE COLLECTE]");
-        System.out.println("[A] Ramassage aux pieds des habitations");
-        System.out.println("[1] Tournée des encombrants (TSP)");
-        System.out.println("[2] Tournée des poubelles (Postier Chinois)");
+        System.out.println("\n[MENU ENTREPRISE DE COLLECTE]");
+        System.out.println("|RAMASSAGE AUX PIEDS DES HABITATIONS|");
+        System.out.println("\nVeuillez choisir une méthode : ");
+        System.out.println("  [1] Tournée des encombrants (TSP)");
+        System.out.println("  [2] Tournée des poubelles (Postier Chinois)");
         System.out.print("Saisir votre choix : ");
 
         int problematique = options(1, 2);
 
-        System.out.println();
-        System.out.println();
-        System.out.println();
-
         if (problematique == 1) {
-            executer_p1("[1] Tournée des encombrants (TSP)");
+            executer_p1("|Tournée des encombrants (TSP)|", 1);
         } else {
-            executer_p2("[2] Tournée des poubelles (Postier Chinois)");
+            executer_p2("|Tournée des poubelles (Postier Chinois)|");
         }
         attente();
     }
 
     private void choix_theme2() {
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println("[MENU ENTREPRISE DE COLLECTE]");
-        System.out.println("[B] Optimiser les ramassages des points de collecte");
-        System.out.println("[1] Heuristique du Plus Proche Voisin");
-        System.out.println("[2] Heuristique de l'Arbre Couvrant Minimal (MST)");
-        System.out.print("\nSaisir votre choix : ");
+        System.out.println("\n[MENU ENTREPRISE DE COLLECTE]");
+        System.out.println("|OPTIMISATION DES POINTS DE COLLECTE|");
+        System.out.println("\nVeuillez choisir une méthode : ");
+        System.out.println("  [1] Heuristique du Plus Proche Voisin");
+        System.out.println("  [2] Heuristique de l'Arbre Couvrant Minimal (MST)");
+        System.out.print("Saisir votre choix : ");
 
         int approche = options(1, 2);
 
-        System.out.println();
-        System.out.println();
-        System.out.println();
-
         if (approche == 1) {
-            executer_p1("[1] Heuristique du Plus Proche Voisin");
+            executer_p1("|Heuristique du Plus Proche Voisin|", 2);
         } else {
-            System.out.println("[2] Heuristique de l'Arbre Couvrant Minimal (MST)");
+            System.out.println("|Heuristique de l'Arbre Couvrant Minimal (MST)|");
         }
         attente();
     }
 
     // Méthode d'execution de la problematique une du theme 1
-    private void executer_p1(String titre) {
-        System.out.println(titre);
-        System.out.println("[1] HO1 : Graphe non-orienté");
-        System.out.println("[2] HO2 : Graphe orienté");
-        System.out.println("[3] HO3 : Graphe mixte");
-        System.out.print("\nSaisir votre choix : ");
-        int hypothese = options(1, 3);
-
-        Graphe g = null;
-        try {
-            String f_aretes = "ressources/aretes_ho" + hypothese + ".txt";
-            String f_sommets = "ressources/sommets.txt";
-            g = new Graphe(f_sommets, f_aretes);
-        } catch (IOException | IllegalArgumentException e) {
-            System.err.println("ERREUR !!! Impossible de construire la carte : " + e.getMessage());
+    private void executer_p1(String titre, int theme) {
+        affichage_titre1(theme, titre);
+        int hypothese = choix_hypothese();
+        Graphe g = charger_graphe1(hypothese);
+        if (g == null) {
             return;
         }
 
@@ -112,56 +84,132 @@ public class Entreprise {
             return;
         }
 
-        List<Sommet> points_a_visiter = new ArrayList<>();
+        List<Sommet> points_a_visiter = saisir_parcours(g, depot);
+        if (points_a_visiter.isEmpty()) return;
 
+        calculer_TSP(g, depot, points_a_visiter);
+    }
+
+    // Méthode execution problématique 2 du theme 1
+    private void executer_p2(String titre) {
+        afficher_titre2(titre);
+        int cas = choix_cas();
+        int hypothese = choix_hypothese();
+
+        Graphe g = charger_graphe2(cas, hypothese);
+        if (g == null) return;
+
+        List<Sommet> impairsNonOrientes = Eulerien.Eulerien_non_oriente(g);
+        List<Sommet> nonEquilibresOrientes = Eulerien.Eulerien_oriente(g);
+        boolean mixteEulier = Eulerien.estMixteEulérien(g);
+        executer_cas(g, cas, hypothese, impairsNonOrientes, nonEquilibresOrientes, mixteEulier);
+    }
+
+    private void affichage_titre1(int theme, String titre) {
+        System.out.println("\n[MENU ENTREPRISE DE COLLECTE]");
+        if (theme == 1) {
+            System.out.println("|RAMASSAGE AUX PIEDS DES HABITATIONS|");
+        }
+        else if (theme == 2) {
+            System.out.println("|OPTIMISATION DES POINTS DE COLLECTE|");
+        }
+        System.out.println(titre);
+    }
+
+    private void afficher_titre2(String titre) {
+        System.out.println("\n[MENU ENTREPRISE DE COLLECTE]");
+        System.out.println(titre);
+        System.out.println("\nVeuillez choisir un cas :");
+        System.out.println("  [1] Cas Idéal : Graphe entièrement pair (Algorithme de Hierholzer)");
+        System.out.println("  [2] Cas Semi-Eulérien : 2 sommets impairs");
+        System.out.println("  [3] Cas Général : Postier Chinois");
+    }
+
+    private int choix_cas() {
+        System.out.print("Saisir votre choix : ");
+        int cas = options(1, 3);
+        switch (cas) {
+            case 1: System.out.println("CAS IDEAL : Graphe Pair"); break;
+            case 2: System.out.println("CAS SEMI-EULERIEN : 2 Sommets Impairs"); break;
+            case 3: System.out.println("CAS GENERAL : Postier Chinois"); break;
+        }
+        return cas;
+    }
+
+    private int choix_hypothese() {
+        System.out.println("\nVeuillez choisir une hypothèse de circulation : ");
+        System.out.println("  [1] HO1 : Graphe non-orienté");
+        System.out.println("  [2] HO2 : Graphe orienté");
+        System.out.println("  [3] HO3 : Graphe mixte");
+        System.out.print("Saisir votre choix : ");
+        return options(1, 3);
+    }
+
+    private Graphe charger_graphe1(int hypothese) {
+        try {
+            String f_aretes = "ressources/aretes_ho" + hypothese + ".txt";
+            String f_sommets = "ressources/sommets.txt";
+            return new Graphe(f_sommets, f_aretes);
+        } catch (IOException | IllegalArgumentException e) {
+            System.err.println("ERREUR !!! Impossible de construire la carte : " + e.getMessage());
+            return null;
+        }
+    }
+
+    private Graphe charger_graphe2(int cas, int hypothese) {
+        String f_sommets = "ressources/sommets.txt";
+        String f_aretes = "ressources/aretes_p2_c" + cas + "_ho" + hypothese + ".txt";
+        try {
+            Graphe g = new Graphe(f_sommets, f_aretes);
+            System.out.println("\nGraphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
+            return g;
+        } catch (Exception e) {
+            System.err.println("!!! Erreur de chargement !!! " + e.getMessage());
+            return null;
+        }
+    }
+
+    private List<Sommet> saisir_parcours(Graphe g, Sommet depot) {
+        List<Sommet> points = new ArrayList<>();
+        Set<Sommet> doublons = new HashSet<>();
         while (true) {
             System.out.println("\nTOURNEE");
             System.out.println("Sommets disponibles : " + g.get_Sommets());
+            System.out.println("Saisir les sommets à visiter (10 max), séparés par des espaces :");
+            String[] liste = scanner.nextLine().split(" ");
 
-            if (depot == null) {
-                System.out.println("!!! Erreur ::: Le sommet 'A' n'existe pas. Veuillez réessayer. !!!");
-                scanner.nextLine(); // nettoie fin de ligne
+            boolean valide = true;
+            doublons.clear();
+
+            if (liste.length > 10) {
+                System.out.println("!!! Erreur !!! Vous ne pouvez pas entrer plus de 10 sommets. !!!");
+                valide = false;
             } else {
-                System.out.println("Saisir les sommets à visiter (10 max), séparés par des espaces :");
-                String s = scanner.nextLine();
-
-                String[] liste = s.split(" ");
-
-                boolean valide = true;
-                Set<Sommet> doublons = new HashSet<>(); // pas de doublons !!!!
-
-                if (liste.length > 10) {
-                    System.out.println("!!! Erreur !!! Vous ne pouvez pas entrer plus de 10 sommets. !!!");
-                    valide = false;
-                } else {
-                    for (String id : liste) {
-                        if (!id.isEmpty()) {
-                            Sommet sommet = g.getSommet(id);
-                            if (sommet == null) {
-                                System.out.println("!!! Erreur !!! Le sommet '" + id + "' n'existe pas. !!!");
-                                valide = false;
-                                break;
-                            } else if (sommet.equals(depot)) {
-                                System.out.println("Le dépôt '" + id + "' sera ignoré de la liste. !!!");
-                            } else {
-                                if (!doublons.add(sommet)) {
-                                    System.out.println("!!! Avertissement !!! Le sommet '" + id + "' est un doublon et ne sera visité qu'une fois. !!!");
-                                }
-                            }
-                        }
+                for (String id : liste) {
+                    if (!id.isEmpty()) {
+                        Sommet s = g.getSommet(id);
+                        if (s == null) {
+                            System.out.println("!!! Erreur !!! Le sommet '" + id + "' n'existe pas. !!!");
+                            valide = false;
+                            break;
+                        } else if (!s.equals(depot)) doublons.add(s);
                     }
                 }
-                if (valide) {
-                    points_a_visiter.addAll(doublons);
-                    break;
-                } else {
-                    System.out.println("Veuillez réessayer de définir la tournée.");
-                }
+            }
+
+            if (valide) {
+                points.addAll(doublons);
+                break;
+            } else {
+                System.out.println("Veuillez réessayer de définir la tournée.");
             }
         }
+        return points;
+    }
 
-        System.out.println("\nCalcul de la tournée pour les points : " + points_a_visiter + " en partant du dépôt " + depot);
-        Tournee.TSP resultat = Tournee.calculer_tournee(g, depot, points_a_visiter);
+    private void calculer_TSP(Graphe g, Sommet depot, List<Sommet> points) {
+        System.out.println("\nCalcul de la tournée pour les points : " + points + " en partant du dépôt " + depot);
+        Tournee.TSP resultat = Tournee.calculer_tournee(g, depot, points);
 
         System.out.println("\n[PHASE 3] : RESULTATS\n");
         if (resultat.reussite()) {
@@ -174,120 +222,73 @@ public class Entreprise {
             System.out.println("Tournée effectuée : " + resultat.getOrdre());
         }
     }
-    // Méthode execution problématique 2 du theme 1
-    private void executer_p2(String titre) {
-        System.out.println(titre);
-        System.out.println("Veuillez choisir un cas :");
-        System.out.println("  [1] Cas Idéal : Graphe entièrement pair (Algorithme de Hierholzer)");
-        System.out.println("  [2] Cas Semi-Eulérien : 2 sommets impairs");
-        System.out.println("  [3] Cas Général : Postier Chinois");
-        System.out.print("Saisir votre choix : ");
 
-        int cas = options(1, 3);
-
-        System.out.println("\nPROBLÉMATIQUE 2 : Organiser la collecte des poubelles (Cycle Eulérien)");
-        if (cas == 1) {
-            System.out.println("CAS IDEAL : Graphe Pair");
-        } else if (cas == 2) {
-            System.out.println("CAS SEMI-EULERIEN : 2 Sommets Impairs");
-        } else if (cas == 3) {
-            System.out.println("CAS GENERAL : Postier Chinois");
+    private void executer_cas(Graphe g, int cas, int hypothese, List<Sommet> impairsNonOrientes, List<Sommet> nonEquilibresOrientes, boolean mixteEulier) {
+        switch(cas) {
+            case 1:
+                executer_cas_ideal(g, hypothese, impairsNonOrientes, nonEquilibresOrientes, mixteEulier);
+                break;
+            case 2:
+                executer_cas_semi_eulerien(g, hypothese, impairsNonOrientes, nonEquilibresOrientes);
+                break;
+            case 3:
+                executer_cas_general(g, hypothese, nonEquilibresOrientes);
+                break;
         }
+    }
 
-        System.out.println("Veuillez choisir une hypothèse de circulation :");
-        System.out.println("  [1] HO1 : Graphe non-orienté");
-        System.out.println("  [2] HO2 : Graphe orienté");
-        System.out.println("  [3] HO3 : Graphe mixte");
-        System.out.print("Saisir votre choix : ");
-
-        int hypothese = options(1, 3);
-
-        String f_sommets = "ressources/sommets.txt";
-        String f_aretes = "";
-
-        f_aretes = "ressources/aretes_p2_c" + cas + "_ho" + hypothese + ".txt";
-
-        Graphe g = null;
-        try {
-            g = new Graphe(f_sommets, f_aretes);
-            System.out.println("\nGraphe chargé avec succès (" + g.get_Sommets().size() + " sommets).");
-        } catch (Exception e) {
-            System.err.println("!!! Erreur de chargement !!! " + e.getMessage());
-            return;
+    private void executer_cas_ideal(Graphe g, int hypothese, List<Sommet> impairs, List<Sommet> nonEquilibres, boolean mixte) {
+        if (hypothese == 1) {
+            if (impairs.isEmpty()) {
+                System.out.println("SUCCÈS !!! Le graphe est Eulérien (tous les sommets sont de degré pair)");
+                Hierholzer.cycle(g, false);
+            } else {
+                System.out.println("ÉCHEC !!! Le graphe n'est pas Eulérien (" + impairs.size() + " sommets impairs)");
+            }
+        } else if (hypothese == 2) {
+            if (nonEquilibres.isEmpty()) {
+                System.out.println("SUCCÈS !!! Le graphe est Eulérien (tous les sommets sont de degré pair)");
+                Hierholzer.cycle(g, true);
+            } else {
+                System.out.println("ÉCHEC !!! Le graphe n'est pas Eulérien (" + impairs.size() + " sommets impairs)");
+            }
+        } else if (hypothese == 3) {
+            if (mixte) {
+                System.out.println("SUCCÈS : Le graphe est Eulérien.");
+                Hierholzer.cycle(g, true);
+            } else {
+                System.out.println("Le graphe n'est pas Eulérien.");
+                Hierholzer.cycle(g, true);
+            }
         }
+    }
 
-
-        List<Sommet> sommetsImpairs = Eulerien.Eulerien_non_oriente(g);
-        List<Sommet> sommets_non_equilibres = Eulerien.Eulerien_oriente(g);
-        List<Sommet> problemesMixtes = Eulerien.trouverSommetsImpairsMixtes(g);
-
-        boolean test = Eulerien.estMixteEulérien(g);
-
-        if (cas == 1) {
-            if (hypothese == 1) {
-                if (sommetsImpairs.isEmpty()) {
-                    System.out.println("SUCCÈS : Le graphe est Eulérien (tous les sommets sont de degré pair)");
-                    Hierholzer.cycle(g, false);
-                } else {
-                    System.out.println("ÉCHEC !!! Le fichier chargé ne correspond pas à un graphe eulérien.");
-                    System.out.println("Sommets impairs trouvés : " + sommetsImpairs);
-                }
-            } else if (hypothese == 2) {
-                if (sommets_non_equilibres.isEmpty()) {
-                    System.out.println("SUCCÈS : Le graphe est Eulérien.");
-                    Hierholzer.cycle(g, true);
-                } else {
-                    System.out.println("Le graphe n'est pas Eulérien.");
-                    Hierholzer.cycle(g, true);
-                }
-            } else if (hypothese == 3) {
-                if (test) {
-                    System.out.println("SUCCÈS : Le graphe est Eulérien.");
-                    Hierholzer.cycle(g, true);
-                } else {
-                    System.out.println("Le graphe n'est pas Eulérien.");
-                    Hierholzer.cycle(g, true);
-                }
+    private void executer_cas_semi_eulerien(Graphe g, int hypothese, List<Sommet> impairs, List<Sommet> nonEquilibres) {
+        if (hypothese == 1) {
+            if (impairs.size() == 2) {
+                System.out.println("ÉCHEC !!! Le graphe n'est pas Eulérien (2 sommets impairs)");
+                Hierholzer.chemin(g, g.getSommet("A"), impairs);
+            } else {
+                System.out.println("ÉCHEC !!! Le graphe n'est pas Eulérien (" + impairs.size() + " sommets impairs)");
             }
-        } else if (cas == 2) {
-            if (hypothese == 1) {
-                if (sommetsImpairs.size() == 2) {
-                    System.out.println("Le graphe n'est pas Eulérien (2 sommets impairs : " + sommetsImpairs + ")");
-                    Hierholzer.chemin(g, g.getSommet("A"), sommetsImpairs);
-                } else {
-                    System.out.println("ÉCHEC !!! Le fichier chargé n'a pas exactement 2 sommets impairs.");
-                    System.out.println("Nombre de sommets impairs trouvés : " + sommetsImpairs.size());
-                }
-            } else if ((hypothese == 2) || (hypothese == 3)) {
-                if (sommets_non_equilibres.isEmpty()) {
-                    System.out.println("SUCCÈS : Le graphe est Eulérien.");
-                    Hierholzer.cycle(g, true);
-                } else {
-                    System.out.println("Le graphe n'est pas Eulérien.");
-                    Postier.lancer(g, 2);
-                }
+        } else if ((hypothese == 2) || (hypothese == 3)) {
+            if (nonEquilibres.isEmpty()) {
+                System.out.println("SUCCÈS !!! Le graphe est Eulérien.");
+                Hierholzer.cycle(g, true);
+            } else {
+                System.out.println("ÉCHEC !!! Le graphe n'est pas Eulérien (" + impairs.size() + " sommets impairs)");
+                Postier.lancer(g, 2);
             }
-        } else if (cas == 3) {
-            if (hypothese == 1) {
-                System.out.println("Le graphe n'est pas Eulérien");
-                Postier.lancer(g, hypothese);
-            } else if (hypothese == 2) {
-                if (sommets_non_equilibres.isEmpty()) {
-                    System.out.println("SUCCÈS : Le graphe est Eulérien.");
-                    Hierholzer.cycle(g, true);
-                } else {
-                    System.out.println("Le graphe n'est pas Eulérien.");
-                    Postier.lancer(g, hypothese);
-                }
-            } /*else if (hypothese == 3) {
-                if (sommets_non_equilibres.isEmpty()) {
-                    System.out.println("SUCCÈS : Le graphe est Eulérien.");
-                    Hierholzer.cycle(g, true);
-                } else {
-                    System.out.println("Le graphe n'est pas Eulérien.");
-                    Postier.lancer(g, hypothese);
-                }
-            }*/
+        }
+    }
+
+    private void executer_cas_general(Graphe g, int hypothese, List<Sommet> nonEquilibres) {
+        if (hypothese == 1 || !nonEquilibres.isEmpty()) {
+            System.out.println("ÉCHEC !!! Le graphe n'est pas Eulérien (" + nonEquilibres.size() + " sommets non equilibrés)");
+            Postier.lancer(g, hypothese);
+        } else {
+            System.out.println("SUCCÈS !!! Le graphe est Eulérien.");
+            Hierholzer.cycle(g, true);
         }
     }
 
