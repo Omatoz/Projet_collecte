@@ -101,7 +101,8 @@ public class Tournee {
                 point_actuel = prochain;
             } else {
                 System.out.println("ERREUR CRITIQUE !!! Impossible de trouver un chemin vers les points restants depuis " + point_actuel.id);
-                System.out.println("La tournée ne peut pas être complétée !!!");
+                System.out.println("!!! La tournée ne peut pas être complétée !!!");
+                break; // SORTIE de la boucle : éviter affichage infini
             }
         }
 
