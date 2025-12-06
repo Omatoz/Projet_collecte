@@ -57,7 +57,7 @@ public class WPBis {
             for (Sommet s : new ArrayList<>(SommetsTries)){
                 if (!colore.get(s)){
                     boolean conflit = false;
-                    // Vérification de ladjacence entre arêtes
+                    // Vérification de l'adjacence entre arêtes
                     for (Arete a : s.aretes) {
                         Sommet voisin = a.destination;
                         if (colore.get(voisin) && couleur.get(voisin) == nbJour) {
