@@ -41,16 +41,13 @@ public class Tournee {
         return sj.toString();
     }
 
-    // calcul de la tournée
-    public static TSP calculer_tournee(Graphe graphe, Sommet depot, List<Sommet> a_visiter) {
-        if (a_visiter == null || a_visiter.isEmpty()) {
-            System.out.println("Avertissement : Aucun point à visiter n'a été fourni. La tournée est Dépôt -> Dépôt.");
-            List<Sommet> ordreSimple = List.of(depot, depot);
-            return new TSP(ordreSimple, 0, new ArrayList<>(List.of(depot)), true);
-        }
-        System.out.println("\n[PHASE 1] : DIJKSTRA\n");
-        List<Sommet> points = new ArrayList<>(a_visiter); // On liste les dépots et adresses (points)
-        points.add(0, depot); // ajout depot
+    private static TSP tourneeVide(Sommet depot) {
+        System.out.println("Avertissement : Aucun point à visiter fourni.");
+        List<Sommet> ordreSimple = List.of(depot, depot);
+        return new TSP(ordreSimple, 0, new ArrayList<>(List.of(depot)), true);
+    }
+
+    private static Map<Sommet, Map<Sommet, Itineraire.Dijkstra>> calculerToutesDistances(Graphe graphe, List<Sommet> points) {
         // On stocke résultats de Dijkstra : distances + chemins
         Map<Sommet, Map<Sommet, Itineraire.Dijkstra>> resultats = new HashMap<>();
 
@@ -71,8 +68,10 @@ public class Tournee {
                 }
             }
         }
+        return resultats;
+    }
 
-        System.out.println("\n[PHASE 2] : PLUS PROCHE VOISIN\n");
+    private static List<Sommet> calculerOrdreVisiteProcheVoisin(Map<Sommet, Map<Sommet, Itineraire.Dijkstra>> resultats, Sommet depot, List<Sommet> a_visiter) {
         List<Sommet> ordre_final = new ArrayList<>(); // initialisation ordre de visite final
         List<Sommet> restants = new ArrayList<>(a_visiter);
 
@@ -103,26 +102,29 @@ public class Tournee {
             } else {
                 System.out.println("ERREUR CRITIQUE !!! Impossible de trouver un chemin vers les points restants depuis " + point_actuel.id);
                 System.out.println("La tournée ne peut pas être complétée !!!");
-                // On retourne un résultat indiquant que la tournée a échoué.
-                return new TSP(ordre_final, -1, null, false); // fin méthode !!!
             }
         }
 
+        return ordre_final;
+    }
+
+
+    private static TSP construireCheminComplet(Map<Sommet, Map<Sommet, Itineraire.Dijkstra>> resultats, List<Sommet> ordre_final, Sommet depot) {
+
+        Sommet point_actuel = ordre_final.get(ordre_final.size() - 1);
         // tous les points ont été visités alors on gère le trajet retour
-        Itineraire.Dijkstra retour = resultats.get(point_actuel).get(depot); // récupèration des infos du trajet retour
-        int distance_retour = retour.getDistance();
+        Itineraire.Dijkstra retour = resultats.get(point_actuel).get(depot);
 
         // On vérifie si retour-dépôt possible
-        if (distance_retour == Integer.MAX_VALUE) {
-            System.out.println("Retour au " + depot.id + " (distance: IMPOSSIBLE)");
-            System.out.println("ERREUR !!! La tournée peut être effectuée, mais le retour au dépôt est impossible.");
+        if (retour.getDistance() == Integer.MAX_VALUE) {
+            System.out.println("Retour au " + depot.id + " impossible.");
             return new TSP(ordre_final, -1, null, false);
         }
 
-        System.out.println("Retour au " + depot.id + " (distance: " + distance_retour + ")");
+        System.out.println("Retour au " + depot.id + " (distance: " + retour.getDistance() + ")");
         ordre_final.add(depot);
 
-        // Cette partie ne sera exécutée que si la tournée est possible
+
         List<Sommet> cheminComplet = new ArrayList<>();
         int distanceTotale = 0;
 
@@ -132,16 +134,34 @@ public class Tournee {
             Itineraire.Dijkstra segment = resultats.get(source).get(dest);
             distanceTotale += segment.getDistance();
 
-            if (cheminComplet.isEmpty()) {
-                cheminComplet.addAll(segment.getChemin());
-            } else {
-                // On ne fait le subList que si le chemin n'est pas vide
-                if (!segment.getChemin().isEmpty()) {
-                    cheminComplet.addAll(segment.getChemin().subList(1, segment.getChemin().size()));
-                }
-            }
+            if (cheminComplet.isEmpty()) cheminComplet.addAll(segment.getChemin());
+            else if (!segment.getChemin().isEmpty())
+                cheminComplet.addAll(segment.getChemin().subList(1, segment.getChemin().size()));
         }
 
         return new TSP(ordre_final, distanceTotale, cheminComplet, true);
+    }
+
+    // calcul de la tournée
+    public static TSP calculer_tournee(Graphe graphe, Sommet depot, List<Sommet> a_visiter) {
+        if (a_visiter == null || a_visiter.isEmpty()) {
+            return tourneeVide(depot);
+        }
+
+        System.out.println("\n[PHASE 1] : DIJKSTRA\n");
+        List<Sommet> points = new ArrayList<>(a_visiter); // On liste les dépots et adresses (points)
+        points.add(0, depot); // ajout depot
+        // On stocke résultats de Dijkstra : distances + chemins
+
+        Map<Sommet, Map<Sommet, Itineraire.Dijkstra>> resultats = calculerToutesDistances(graphe, points);
+
+        System.out.println("\n[PHASE 2] : PLUS PROCHE VOISIN\n");
+        List<Sommet> ordre_final = calculerOrdreVisiteProcheVoisin(resultats, depot, a_visiter); // initialisation ordre de visite final
+
+        if (ordre_final == null) {
+            return new TSP(a_visiter, -1, null, false);
+        }
+
+        return construireCheminComplet(resultats, ordre_final, depot);
     }
 }
