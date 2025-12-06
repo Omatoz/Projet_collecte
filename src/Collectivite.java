@@ -40,7 +40,7 @@ public class Collectivite {
         System.out.println("[MENU COLLECTIVITÉ TERRITORIALE]");
         System.out.println("→ Planification des jours de passage dans les differents quartiers :");
         System.out.println("[1] Collecte des secteurs (Welsh et Powell)");
-        System.out.println("[2] Collecte des secteurs sans nuisance et en tenant en compte les quantités et les capacités de collecte");
+        System.out.println("[2] Collecte des secteurs sans nuisance et en tenant en compte des quantités et des capacités de collecte");
         System.out.print("\nSaisir votre choix : ");
 
         int hypothese = options(1, 2);
@@ -52,7 +52,7 @@ public class Collectivite {
         if (hypothese == 1) {
             executer_p4("[1] Collecte des secteurs (Welsh et Powell)");
         } else {
-            executer_p5("[2] Collecte des secteurs sans nuisance et en tenant en compte les quantités et les capacités de collecte");
+            executer_p5("[2] Collecte des secteurs sans nuisance et en tenant en compte des quantités et des capacités de collecte");
         }
         attente();
     }
