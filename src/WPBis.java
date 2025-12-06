@@ -40,7 +40,7 @@ public class WPBis {
             public int compare(Sommet s1, Sommet s2) {
                 int q1 = quantites.getOrDefault(s1,0);
                 int q2 = quantites.getOrDefault(s2,0);
-                return Integer.compare(q1, q2); // tri décroissant
+                return Integer.compare(q2, q1); // tri décroissant
             }
         });
 
@@ -89,12 +89,16 @@ public class WPBis {
     public void afficherPlanning (Map<Sommet, Integer> quantites) {
         for (int j = 1; j <= nbJour; j++) {
             System.out.println("Jour de collecte numéro " + j + ":");
+            int totalDuJour = 0;
             for (Sommet s : SommetsTries) {
                 if (couleur.get(s) == j) {
-                    System.out.println(s.id + "a pour quantite :" + quantites.getOrDefault(s, 0));
+                    int q = quantites.getOrDefault(s,0);
+                    System.out.println(s.id + " a pour quantite : " + q);
+                    totalDuJour += q;
                 }
             }
-            System.out.println();
+            System.out.println("--> Total ramasse ce jour :" + totalDuJour + " sur " + capaciteCamion);
+            System.out.println("---------------------------------------");
         }
     }
 }
