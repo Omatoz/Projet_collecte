@@ -38,13 +38,16 @@ public class Entreprise {
         System.out.println("\n[MENU ENTREPRISE DE COLLECTE]");
         System.out.println("|RAMASSAGE AUX PIEDS DES HABITATIONS|");
         System.out.println("\nVeuillez choisir une méthode : ");
-        System.out.println("  [1] Tournée des encombrants (TSP)");
-        System.out.println("  [2] Tournée des poubelles (Postier Chinois)");
+        System.out.println("  [1] Tournée des encombrants (1 ramassage)");
+        System.out.println("  [2] Tournée des encombrants (TSP)");
+        System.out.println("  [3] Tournée des poubelles (Postier Chinois)");
         System.out.print("Saisir votre choix : ");
 
         int problematique = options(1, 2);
 
         if (problematique == 1) {
+            executer_unRamassage("|Tournée des encombrants (1 ramassage)|", 1);
+        } else if (problematique == 2) {
             executer_p1("|Tournée des encombrants (TSP)|", 1);
         } else {
             executer_p2("|Tournée des poubelles (Postier Chinois)|");
@@ -406,4 +409,39 @@ public class Entreprise {
             System.err.println("Erreur : fichier introuvable !");
         }
     }
+
+    private void executer_unRamassage(String titre, int theme) {
+        affichage_titre1(theme, titre);
+        int graphe_test = choix_graphe();
+        Graphe g = charger_graphe1(1, graphe_test); // Hypothèse 1
+        if (g == null) {
+            return;
+        }
+        // Sommet de départ toujours A
+        Sommet depot = g.getSommet("A");
+        if (depot == null) {
+            System.err.println("!!! ERREUR CRITIQUE : Le sommet de dépôt 'A' n'a pas été trouvé dans le graphe.");
+            return;
+        }
+        Scanner sc = new Scanner(System.in);
+        Sommet arrivee = null;
+        while (arrivee == null) {
+            System.out.println("Choisir le sommet d'arrivée :");
+            String choix = sc.nextLine().trim();
+            if (g.getSommet(choix) != null) {
+                arrivee = g.getSommet(choix);
+            } else {
+                System.out.println("Sommet invalide, réessayez :");
+            }
+        }
+
+        UnRamassage collecte = new UnRamassage(g);
+        UnRamassage.Ramassage resultat = collecte.ramassage(depot, arrivee);
+
+        System.out.println("\n Résultat du ramassage ");
+        System.out.println("Aller : " + resultat.chemin(resultat.aller.getChemin()) + " (distance = " + resultat.aller.getDistance() + ")");
+        System.out.println("Retour : " + resultat.chemin(resultat.retour.getChemin()) + " (distance = " + resultat.retour.getDistance() + ")");
+        System.out.println("Distance totale : " + resultat.distance);
+    }
+
 }
