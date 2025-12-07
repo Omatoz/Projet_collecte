@@ -1,4 +1,4 @@
-id_sommet
+id_sommet;contenance
 A;0
 B;3
 C;6
