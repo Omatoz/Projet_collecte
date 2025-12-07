@@ -358,9 +358,11 @@ public class Entreprise {
 
     //approche 2 thème 2
     private void executer_MST(){
+        int hypothse = choix_hypothese();
+        int graphe_test = choix_graphe();
         try {
             //instanciation MST pour avoir sommets et aretes du graphe initial
-            MST mst = new MST("ressources/sommets.txt", "ressources/aretes_ho1.txt");
+            MST mst = charger_MST(hypothse, graphe_test);
 
             Set<String> aretesAffichees = new HashSet<>();
             for (Sommet s : mst.getGraphe().get_Sommets()) {
@@ -405,19 +407,50 @@ public class Entreprise {
             int capaciteMax = 15;   // attribut à modifier
             mst.decouperTournees(capaciteMax);
 
-        } catch (FileNotFoundException e) {
-            System.err.println("Erreur : fichier introuvable !");
+        } catch (Exception e) {
+            System.err.println("Erreur!");
         }
     }
 
+    private MST charger_MST(int hypothese, int graphe_test) {
+        try {
+            String fichierSommets;
+            String fichierAretes;
+            fichierSommets = (graphe_test == 1)
+                    ? "ressources/sommets.txt"
+                    : "ressources/sommets_complexe.txt";
+
+            switch (hypothese) {
+                case 1 -> fichierAretes = "ressources/aretes_ho1.txt";
+                case 2 -> fichierAretes = "ressources/aretes_ho2.txt";
+                case 3 -> fichierAretes = "ressources/aretes_ho3.txt";
+                default -> {
+                    System.err.println("Hypothèse invalide.");
+                    return null;
+                }
+            }
+
+            return new MST(fichierSommets, fichierAretes);
+
+        } catch (FileNotFoundException e) {
+            System.err.println("Erreur : fichier introuvable.");
+            return null;
+        }
+    }
+
+
+
+
+
+    //hypothèse 1 problématique 1 thème 1
     private void executer_unRamassage(String titre, int theme) {
         affichage_titre1(theme, titre);
+        int hypothese = choix_hypothese();
         int graphe_test = choix_graphe();
-        Graphe g = charger_graphe1(1, graphe_test); // Hypothèse 1
+        Graphe g = charger_graphe1(hypothese, graphe_test);
         if (g == null) {
             return;
         }
-        // Sommet de départ toujours A
         Sommet depot = g.getSommet("A");
         if (depot == null) {
             System.err.println("!!! ERREUR CRITIQUE : Le sommet de dépôt 'A' n'a pas été trouvé dans le graphe.");

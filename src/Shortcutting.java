@@ -14,6 +14,10 @@ public class Shortcutting {
                 sommetsMarques.add(sommet);
             }
         }
+        //on ajoute le sommet de depart à la fin du chemin pour revenir au centre de traitement
+        if(!chemin.isEmpty()){
+            chemin.add(chemin.get(0));
+        }
         return chemin;
     }
 }
