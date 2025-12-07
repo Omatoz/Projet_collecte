@@ -41,16 +41,19 @@ public class Entreprise {
         System.out.println("  [1] Tournée des encombrants (1 ramassage)");
         System.out.println("  [2] Tournée des encombrants (TSP)");
         System.out.println("  [3] Tournée des poubelles (Postier Chinois)");
+        System.out.println("  [4] Retour au menu principal");
         System.out.print("Saisir votre choix : ");
 
-        int problematique = options(1, 2);
+        int problematique = options(1, 4);
 
         if (problematique == 1) {
-            executer_unRamassage("|Tournée des encombrants (1 ramassage)|", 1);
+            executer_p0("|Tournée des encombrants (1 ramassage)|", 1);
         } else if (problematique == 2) {
             executer_p1("|Tournée des encombrants (TSP)|", 1);
-        } else {
+        } else if (problematique == 3) {
             executer_p2("|Tournée des poubelles (Postier Chinois)|");
+        } else if (problematique == 4) {
+            return;
         }
         attente();
     }
@@ -61,15 +64,21 @@ public class Entreprise {
         System.out.println("\nVeuillez choisir une méthode : ");
         System.out.println("  [1] Heuristique du Plus Proche Voisin");
         System.out.println("  [2] Heuristique de l'Arbre Couvrant Minimal (MST)");
+        System.out.println("  [3] Retour au menu principal");
         System.out.print("Saisir votre choix : ");
 
-        int approche = options(1, 2);
+        int approche = options(1, 3);
 
-        if (approche == 1) {
-            executer_p1("|Heuristique du Plus Proche Voisin|", 2);
-        } else {
-            System.out.println("|Heuristique de l'Arbre Couvrant Minimal (MST)|");
-            executer_MST();
+        switch (approche) {
+            case 1:
+                executer_p1("|Heuristique du Plus Proche Voisin|", 2);
+                break;
+            case 2:
+                System.out.println("|Heuristique de l'Arbre Couvrant Minimal (MST)|");
+                executer_MST();
+                break;
+            case 3:
+                return;
         }
         attente();
     }
@@ -481,7 +490,7 @@ public class Entreprise {
 
 
     //hypothèse 1 problématique 1 thème 1
-    private void executer_unRamassage(String titre, int theme) {
+    private void executer_p0(String titre, int theme) {
         affichage_titre1(theme, titre);
         int hypothese = choix_hypothese();
         int graphe_test = choix_graphe();
