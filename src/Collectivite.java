@@ -28,6 +28,7 @@ public class Collectivite {
         }
     }
 
+    // Méthode du choix du thème 3 et des problématiques dans le menu principal
     private void choix_theme3() {
         System.out.println("\n[MENU COLLECTIVITÉ TERRITORIALE]");
         System.out.println("→ Planification des jours de passage dans les differents quartiers :");
@@ -78,10 +79,10 @@ public class Collectivite {
         // Création de l'instance WelshPowell et coloration
         WelshPowell wp = new WelshPowell(g);
         System.out.println("\nApplication de l'algorithme de Welsh et Powell :");
-        wp.coloration();
-        wp.afficherCouleurs();
+        wp.coloration(); // Appelle de la méthode de coloration pour avoir le planning
+        wp.afficherCouleurs(); // Affichage du planning
 
-        System.out.println("\nNombre total de jours de ramassage nécessaires : " + wp.getNbCouleurs());
+        System.out.println("\nNombre total de jours de ramassage nécessaires : " + wp.getNbCouleurs()); // Récapitulatif du nombre de jours nécéssaires
     }
 
     // Méthode pour l'hypothèse 2 du thème 3
@@ -98,7 +99,8 @@ public class Collectivite {
         // Fichiers de sommets et d'arêtes
         String f_sommets = "ressources/sommets.txt"; // commun aux deux graphes
         String f_aretes = "ressources/aretes_t3_h1_ho1." + grapheChoisi + ".txt";
-        String f_quantites = "ressources/sommets_t3_h2.txt";
+        String f_quantites = "ressources/sommets_t3_h2.txt"; // Fichier avec la pondaration des sommets
+
         // Chargement du graphe
         Graphe g = null;
         try {
@@ -126,6 +128,7 @@ public class Collectivite {
                     }
                 }
             }
+            // Lecture du fichier
             while (scanner.hasNextLine()) {
                 String ligne = scanner.nextLine().trim();
                 if (!ligne.isEmpty()) {
@@ -134,7 +137,7 @@ public class Collectivite {
                         String id = parts[0].trim().toUpperCase();
                         int q = Integer.parseInt(parts[1].trim());
                         Sommet s = g.getSommet(id);
-                        if (s != null) {
+                        if (s != null) { // controle de si le sommet est existant dans le graphe
                             quantites.put(s, q);
                         } else {
                             System.err.println("Sommet inconnu dans le graphe : " + id);
@@ -149,20 +152,21 @@ public class Collectivite {
 
         // Demande de la capacité du camion
         System.out.print("Entrez la capacité maximale du camion : ");
-        int capaciteCamion = options(13, 1000);
+        int capaciteCamion = options(13, 1000);// Entre 14 et 1000
 
         // Création de l'instance WelshPowellHypothese2
         WPBis wp = new WPBis(g, capaciteCamion);
 
         // Application de l'algorithme et affichage du planning
         System.out.println("\nApplication de l'algorithme Welsh et Powell pour l'Hypothèse 2 :");
-        wp.coloration(quantites);
-        wp.afficherPlanning(quantites);
+        wp.coloration(quantites); // Apelle de la méthode de coloration pour le planning
+        wp.afficherPlanning(quantites); // Affichage du planning
 
-        System.out.println("\nNombre total de jours nécessaires : " + wp.getNbJour());
+        System.out.println("\nNombre total de jours nécessaires : " + wp.getNbJour());//Récapitulatif du nombre de jours de collecte nécéssaire
 
     }
 
+    // Choix de l'option apr l'utilisateur
     private int options(int min, int max) {
         int choix;
         while (true) {

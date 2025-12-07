@@ -1,6 +1,7 @@
 import java.util.*;
 
 public class WPBis {
+    // Attributs
     private Graphe g;
     private ArrayList<Sommet> SommetsTries;
     private Map<Sommet, Integer> couleur ;
@@ -9,6 +10,7 @@ public class WPBis {
     private int nbJour;
     private int capaciteCamion;
 
+    // Constructeur
     public WPBis(Graphe g, int capaciteCamion) {
         this.g = g;
         this.SommetsTries = new ArrayList<>();
@@ -19,17 +21,19 @@ public class WPBis {
         this.capaciteCamion = capaciteCamion;
     }
     public int getNbJour() {
-        return nbJour;
+        return nbJour; // getters
     }
 
+    // Méthode qui vérifie s'il reste des sommets non colorés
     private boolean SommetsNonColores(){
         for (Boolean b : colore.values()){
-            if (!b){ return true;
+            if (!b){ return true; // retourne true si un sommet n'est pas encore coloré donc n'a pas de jours de collecte
             }
         }
         return false;
     }
 
+    // Méthode principale de coloration
     public void coloration (Map<Sommet, Integer> quantites){
         SommetsTries.clear(); // pour s'assurer qu'il n'y a pas d'anciens sommets
         SommetsTries.addAll(g.get_Sommets()); // copie des sommets du graphe
@@ -49,12 +53,13 @@ public class WPBis {
             couleur.put(s, 0);
         }
 
-        nbJour = 1;
-        capaciteJour.put(nbJour, capaciteCamion);
+        nbJour = 1; // jour 1
+        capaciteJour.put(nbJour, capaciteCamion); // capcité initiale du jour un
 
+        // Boucle principale
         while (SommetsNonColores()){
             boolean PlaceSommet = false; // pour savoir si le jour a servi
-            for (Sommet s : new ArrayList<>(SommetsTries)){
+            for (Sommet s : new ArrayList<>(SommetsTries)){ // Parcourt dans ordre décroissant des pondérations
                 if (!colore.get(s)){
                     boolean conflit = false;
                     // Vérification de l'adjacence entre arêtes
@@ -66,14 +71,14 @@ public class WPBis {
                         }
                     }
                     int qs = quantites.getOrDefault(s,0);
-                    // Vérifiction de la capcité du camion pour le jour en cours
+                    // Vérifiction de la capacité du camion pour le jour en cours
                     if (qs > capaciteJour.get(nbJour)){
-                        conflit = true;
+                        conflit = true; // Plus assez de place
                     }
-                    if (!conflit) {
+                    if (!conflit) {// si pas de conflits on place ce secteur dans ce jour
                         couleur.put(s, nbJour);
                         colore.put(s, true);
-                        capaciteJour.put(nbJour, capaciteJour.get(nbJour) - qs);
+                        capaciteJour.put(nbJour, capaciteJour.get(nbJour) - qs);// mise de à jour de la place restante dans un camion
                         PlaceSommet = true; // un sommet (secteur) à été attribué à un jour
                     }
                 }

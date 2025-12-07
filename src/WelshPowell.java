@@ -5,29 +5,31 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 public class WelshPowell {
+    // Attributs
     private Graphe g;
     private ArrayList<Sommet> SommetsTries = new ArrayList<>();
     private Map<Sommet, Integer> couleur = new HashMap<>();
     private Map<Sommet, Boolean> colore = new HashMap<>();
     private int nbCouleur = 0;
 
+    // Constructeur
     public WelshPowell(Graphe g) {
         this.g = g;
     }
-
+    // Méthode qui vérifie s'il reste des sommets non colorés
     private boolean existeSommetNonColore () {
         for (Boolean b : colore.values()) {
             if (!b) {
-                return true;
+                return true; // si au moins un sommet n'est pas encore coloré
             }
         }
         return false;
     }
-
+    // Méthode qui retourne le nombre de couleurs utilisée
     public int getNbCouleurs() {
-        return nbCouleur - 1;
+        return nbCouleur - 1; // -1 car une incrémentation de trop en fin d'algorithme
     }
-
+    // Méthode qui affiche la couleur/ jour de collecte de chaque sommet et affiche un récapitulatif
     public void afficherCouleurs(){
         // Affichage de la liste de coloration par sommet/ secteur
         for (Sommet s : g.get_Sommets()){
@@ -47,9 +49,9 @@ public class WelshPowell {
         }
     }
 
-    // Méthode de coloration
+    // Méthode de coloration principale
     public void coloration () {
-        SommetsTries.clear();
+        SommetsTries.clear(); // remise à zéro des sommets
         SommetsTries.addAll(g.get_Sommets());
         // On tri les degrés des sommets par décroissance
         Collections.sort(SommetsTries, new Comparator<Sommet>() {
@@ -57,8 +59,8 @@ public class WelshPowell {
             public int compare(Sommet s1, Sommet s2) {
 
                 // degré = nombre d'arêtes sortantes
-                int deg1 = s1.aretes.size();
-                int deg2 = s2.aretes.size();
+                int deg1 = s1.aretes.size(); // degré du sommet 1
+                int deg2 = s2.aretes.size(); // degré du sommet 2
 
                 // On trie par ordre décroissant les degrés des sommets
                 return Integer.compare(deg2, deg1);
@@ -70,13 +72,13 @@ public class WelshPowell {
             couleur.put(s, 0);
         }
 
-        nbCouleur = 1;
+        nbCouleur = 1; // couleur 1 = jour 1
 
         // Boucle principale pour la coloration
 
         while (existeSommetNonColore()) {
-             for(Sommet s : new ArrayList<>(SommetsTries)) {
-                 if (!colore.get(s)){
+             for(Sommet s : new ArrayList<>(SommetsTries)) { // Parcours des sommets dans l'odre du tri précédent
+                 if (!colore.get(s)){  // on regarde que les sommets non colorés
                      boolean conflit = false;
 
                      // Vérification des voisins
@@ -89,14 +91,14 @@ public class WelshPowell {
                          }
                      }
 
-                     // Si pas de conflit d'adjacence de sommet on colorie le sommet sur leqeul l'algorithme passe
+                     // Si pas de conflit d'adjacence de sommet on colorie le sommet sur lequel l'algorithme passe
                      if (!conflit){
                          couleur.put(s, nbCouleur);
                          colore.put(s, true);
                      }
                  }
              }
-             nbCouleur++;
+             nbCouleur++; // incrémentation des couleurs
         }
 
     }
