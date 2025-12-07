@@ -468,9 +468,7 @@ public class Entreprise {
         try {
             String fichierSommets;
             String fichierAretes;
-            fichierSommets = (graphe_test == 1)
-                    ? "ressources/sommets.txt"
-                    : "ressources/sommets_complexe.txt";
+            fichierSommets = "ressources/sommets_contenance.txt";
 
             switch (hypothese) {
                 case 1 -> fichierAretes = "ressources/aretes_ho1.txt";

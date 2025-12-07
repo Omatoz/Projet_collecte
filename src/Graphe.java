@@ -6,7 +6,11 @@ public class Graphe {
     private Map<String, Sommet> sommets = new HashMap<>();
 
     public Graphe(String fichierSommets, String fichierAretes) throws FileNotFoundException {
-        charger_Sommets(fichierSommets);
+        if (fichierSommets.toLowerCase().contains("contenance")) {
+            charger_Sommets_MST(fichierSommets);
+        } else {
+            charger_Sommets_simple(fichierSommets);
+        }
         charger_Rues(fichierAretes);
     }
 
@@ -25,7 +29,7 @@ public class Graphe {
         }
     }
 
-    private void charger_Sommets(String fichier) throws FileNotFoundException {
+    private void charger_Sommets_simple(String fichier) throws FileNotFoundException {
         File f = new File(fichier);
 
         try (Scanner sc = new Scanner(f)) {
@@ -40,6 +44,25 @@ public class Graphe {
         System.out.println(sommets.size() + " sommets chargés.");
     }
 
+    private void charger_Sommets_MST(String fichier) throws FileNotFoundException {
+        File f = new File(fichier);
+
+        try (Scanner sc = new Scanner(f)) {
+            if (sc.hasNextLine()) sc.nextLine(); // en-tête
+            while (sc.hasNextLine()) {
+                String ligne = sc.nextLine().trim();
+                if (!ligne.isEmpty()) {
+                    String[] t = ligne.split(";");
+                    String id = t[0].trim().toUpperCase();
+                    int contenance = Integer.parseInt(t[1].trim());
+                    Sommet s = new Sommet(id);
+                    s.contenance = contenance;
+                    sommets.put(id, s);
+                }
+            }
+        }
+        System.out.println(sommets.size() + " sommets chargés.");
+    }
     private void charger_Rues(String fichier) throws FileNotFoundException {
         File f = new File(fichier);
         System.out.println("[LECTURE] : " + f.getAbsolutePath());
