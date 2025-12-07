@@ -42,12 +42,13 @@ public class Graphe {
 
     private void charger_Rues(String fichier) throws FileNotFoundException {
         File f = new File(fichier);
-        System.out.println(">>> Lecture : " + f.getAbsolutePath());
+        System.out.println("[LECTURE] : " + f.getAbsolutePath());
 
-        try (Scanner sc = new Scanner(f)) {
-            if (sc.hasNextLine()) sc.nextLine();
-            while (sc.hasNextLine()) {
-                String ligne = sc.nextLine().trim();
+        try (Scanner s = new Scanner(f)) {
+            if (s.hasNextLine()) s.nextLine();
+
+            while (s.hasNextLine()) {
+                String ligne = s.nextLine().trim();
                 if (ligne.isEmpty()) continue;
 
                 String[] d = ligne.split(";");
@@ -85,8 +86,8 @@ public class Graphe {
         }
 
         switch (type) {
-            case 1:
-            case 3:  // double sens
+            case 1: // une voie double sens
+            case 3:  // deux voies double sens
                 s.ajouter_arete(s, d, poids, type);
                 d.ajouter_arete(d, s, poids, type);
                 break;
@@ -97,44 +98,3 @@ public class Graphe {
         }
     }
 }
-
-
-// stockage en mémoire vive (matrice d'adjacence)
-    /*public void afficherGraphe(){
-        List<String> listeSommets = new ArrayList<>(sommets.keySet());
-        Collections.sort(listeSommets);
-
-        int ordre = listeSommets.size();
-        int infini=999;
-
-        int[][] matriceAdjacence = new int[ordre][ordre];
-
-        for (int i = 0; i < ordre; i++) {
-            Sommet sommet = sommets.get(listeSommets.get(i));
-            for(Arete a : sommet.aretes) {
-                int j = listeSommets.indexOf(a.destination.id);
-                matriceAdjacence[i][j] = a.poids;
-            }
-        }
-
-        System.out.println("Matrice d'adjacence du graphe: ");
-        System.out.println("         ");
-
-        for (String id : listeSommets){
-            System.out.println(id);
-        }
-
-        for(int i=0;i<ordre;i++){
-            for(int j=0;j<ordre;j++){
-                if(matriceAdjacence[i][j]==infini){
-                    System.out.println("∞ ");
-                }else{
-                    System.out.println(matriceAdjacence[i][j]);
-                }
-            }
-        }
-    }
-     */
-
-
-

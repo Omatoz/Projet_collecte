@@ -3,34 +3,34 @@ import java.util.*;
 
 public class Menu {
 
-    private Scanner scanner; // On utilise un seul scanner pour toute l'application
+    private Scanner scanner;
     private Entreprise entreprise;
     private Collectivite collectivite;
 
     public Menu() {
-        this.scanner = new Scanner(System.in);
-        this.entreprise = new Entreprise(scanner);
-        this.collectivite = new Collectivite(scanner);
+        this.scanner = new Scanner(System.in); // cree scanner
+        this.entreprise = new Entreprise(scanner); // cree instance entreprise
+        this.collectivite = new Collectivite(scanner); // cree instance collectivite
     }
 
     public void lancer() {
 
-        // Boucle principale du programme. Elle continue tant que l'utilisateur ne choisit pas de quitter.
+        // Boucle principale : tant que l'utilisateur ne choisit pas de quitter
         while (true) {
             afficher_menu_principal();
             int theme = options(1, 3);
 
             switch (theme) {
                 case 1:
-                    entreprise.menu_entreprise();
+                    entreprise.menu_entreprise(); // menu entreprise
                     break;
                 case 2:
-                    collectivite.menu_collectivite();
+                    collectivite.menu_collectivite(); // menu collectivites
                     break;
                 case 3:
                     System.out.println("Au revoir :) !!!");
-                    scanner.close(); // On ferme le scanner juste avant de quitter.
-                    return; // Termine la méthode lancer() et donc le programme.
+                    scanner.close(); // ferme scanner
+                    return;
             }
         }
     }
@@ -44,6 +44,7 @@ public class Menu {
         System.out.print("Saisir votre rôle : ");
     }
 
+    // methode pour choix des fonctionnalites
     private int options(int min, int max) {
         int choix = 0;
         while (true) {
