@@ -13,6 +13,7 @@ public class  Sommet {
     public Sommet(String id, int contenance){
         this.id = id;
         this.contenance = contenance;
+        this.aretes = new ArrayList<>();
     }
 
     public void ajouter_arete(Sommet depart, Sommet destination, int poids, int type) {

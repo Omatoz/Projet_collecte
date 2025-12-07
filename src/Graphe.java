@@ -29,16 +29,21 @@ public class Graphe {
         File f = new File(fichier);
 
         try (Scanner sc = new Scanner(f)) {
-            if (sc.hasNextLine()) sc.nextLine(); // en-tête
+            if (sc.hasNextLine()) sc.nextLine(); // en-tête si présent
             while (sc.hasNextLine()) {
                 String ligne = sc.nextLine().trim();
                 if (!ligne.isEmpty()) {
-                    ajouter_Sommet(ligne);
+                    String[] parts = ligne.split(";");
+                    if (parts.length < 2) continue; // sécurité
+                    String id = parts[0].trim().toUpperCase();
+                    int contenance = Integer.parseInt(parts[1].trim());
+                    ajouter_Sommet(id, contenance);
                 }
             }
         }
         System.out.println(sommets.size() + " sommets chargés.");
     }
+
 
     private void charger_Rues(String fichier) throws FileNotFoundException {
         File f = new File(fichier);
@@ -65,6 +70,9 @@ public class Graphe {
 
     public void ajouter_Sommet(String id) {
         sommets.putIfAbsent(id.toUpperCase(), new Sommet(id.toUpperCase()));
+    }
+    public void ajouter_Sommet(String id, int contenance) {
+        sommets.putIfAbsent(id, new Sommet(id, contenance));
     }
 
     public Sommet getSommet(String id) {
@@ -97,44 +105,6 @@ public class Graphe {
         }
     }
 }
-
-
-// stockage en mémoire vive (matrice d'adjacence)
-    /*public void afficherGraphe(){
-        List<String> listeSommets = new ArrayList<>(sommets.keySet());
-        Collections.sort(listeSommets);
-
-        int ordre = listeSommets.size();
-        int infini=999;
-
-        int[][] matriceAdjacence = new int[ordre][ordre];
-
-        for (int i = 0; i < ordre; i++) {
-            Sommet sommet = sommets.get(listeSommets.get(i));
-            for(Arete a : sommet.aretes) {
-                int j = listeSommets.indexOf(a.destination.id);
-                matriceAdjacence[i][j] = a.poids;
-            }
-        }
-
-        System.out.println("Matrice d'adjacence du graphe: ");
-        System.out.println("         ");
-
-        for (String id : listeSommets){
-            System.out.println(id);
-        }
-
-        for(int i=0;i<ordre;i++){
-            for(int j=0;j<ordre;j++){
-                if(matriceAdjacence[i][j]==infini){
-                    System.out.println("∞ ");
-                }else{
-                    System.out.println(matriceAdjacence[i][j]);
-                }
-            }
-        }
-    }
-     */
 
 
 

@@ -1,12 +1,12 @@
 id_sommet
-A
-B
-C
-D
-E
-F
-G
-H
-I
-J
+A;0
+B;3
+C;6
+D;7
+E;9
+F;4
+G;5
+H;4
+I;3
+J;14
 

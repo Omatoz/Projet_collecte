@@ -361,7 +361,7 @@ public class Entreprise {
         int hypothse = choix_hypothese();
         int graphe_test = choix_graphe();
         try {
-            //instanciation MST pour avoir sommets et aretes du graphe initial
+            //charger MST pour avoir sommets et aretes du graphe initial
             MST mst = charger_MST(hypothse, graphe_test);
 
             Set<String> aretesAffichees = new HashSet<>();
@@ -406,6 +406,44 @@ public class Entreprise {
             System.out.println("5) DECOUPAGE EN TOURNEES EN FONCTION DE LA CAPACITE ");
             int capaciteMax = 15;   // attribut à modifier
             mst.decouperTournees(capaciteMax);
+
+            List<List<Sommet>> tournees = mst.getTournees();
+            System.out.println("--------------------------------------------------------------");
+            System.out.println("RÉCAPITULATIF DES TOURNÉES");
+            System.out.println("Capacité maximale du camion : " + capaciteMax);
+            System.out.println("Nombre total de tournées : " + tournees.size());
+            System.out.println("--------------------------------------------------------------");
+
+            int index = 1;
+            for (List<Sommet> tournee : tournees) {
+                System.out.println("Tournée " + index + " :");
+                int chargeTotale = 0;
+                int distanceTotale = 0;
+                for (int i = 0; i < tournee.size(); i++) {
+                    Sommet s = tournee.get(i);
+                    System.out.print(s.id);
+
+                    if (i < tournee.size() - 1) {
+                        Sommet suivant = tournee.get(i + 1);
+
+                        // Distance réelle via Dijkstra
+                        Itineraire.Dijkstra d = Itineraire.trouver_chemin(mst.getGraphe(), s, suivant);
+                        distanceTotale += d.getDistance();
+
+                        System.out.print(" -> ");
+                    }
+
+                    if (i > 0) {
+                        chargeTotale += s.contenance;
+                    }
+                }
+
+                System.out.println(" ");
+                System.out.println("Charge totale collectée : " + chargeTotale);
+                System.out.println("Distance totale parcourue : " + distanceTotale);
+                System.out.println("--------------------------------------------------------------");
+                index++;
+            }
 
         } catch (Exception e) {
             System.err.println("Erreur!");
