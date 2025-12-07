@@ -50,46 +50,5 @@ public class Prim {
         return listeAretes;
     }
 }
-    /*
-    public static List<Arete> arbreCouvrantMinimal (List<Sommet> sommets){
-        Set<Sommet> gPrime = new HashSet(); //savoir si sommets sont déjà dans sous graphe G'
-        List<Arete> listeAretes = new ArrayList<>();   //aretes de G'
-        Sommet depart = sommets.get(0);
-        gPrime.add(depart);
 
-        while(gPrime.size() < sommets.size()){ //on s'arrete à n-1 aretes
-            Arete aretePoidsMin = null;
-            for (Sommet s : gPrime){
-                for (Arete a : s.aretes){
-                    Sommet initial = a.depart;
-                    Sommet fin = a.destination;
-
-                    boolean gPrimeInitial = gPrime.contains(initial);
-                    boolean gPrimeDestination = gPrime.contains(fin);
-
-                    if(gPrimeInitial&&!gPrimeDestination || !gPrimeInitial&&gPrimeDestination){
-                        if(aretePoidsMin==null){
-                            aretePoidsMin = a;
-                        }
-                    }
-
-                }
-
-            }
-
-            listeAretes.add(aretePoidsMin);
-            Sommet initial = aretePoidsMin.depart;
-            Sommet fin = aretePoidsMin.destination;
-
-            if(!gPrime.contains(initial)){
-                gPrime.add(initial);
-            }
-
-            if(!gPrime.contains(fin)){
-                gPrime.add(fin);
-            }
-
-        }
-        return listeAretes;
-    }*/
 
