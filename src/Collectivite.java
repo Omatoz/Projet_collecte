@@ -11,13 +11,8 @@ public class Collectivite {
 
     public void menu_collectivite() {
         while (true) {
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println("[MENU COLLECTIVITÉ TERRITORIALE]");
+            System.out.println("\n[MENU COLLECTIVITÉ TERRITORIALE]");
             System.out.println("[1] Planification des jours de collecte");
-            System.out.println("→ Welsh & Powell (coloration des quartiers)");
-            System.out.println(" → Prise en compte des quantités et capacités (Hyp. 2)");
             System.out.println("[2] Retour au menu principal");
             System.out.print("\nSaisir votre choix : ");
 
@@ -34,10 +29,7 @@ public class Collectivite {
     }
 
     private void choix_theme3() {
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println("[MENU COLLECTIVITÉ TERRITORIALE]");
+        System.out.println("\n[MENU COLLECTIVITÉ TERRITORIALE]");
         System.out.println("→ Planification des jours de passage dans les differents quartiers :");
         System.out.println("[1] Collecte des secteurs (Welsh et Powell)");
         System.out.println("[2] Collecte des secteurs sans nuisance et en tenant en compte des quantités et des capacités de collecte");
