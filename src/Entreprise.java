@@ -46,14 +46,18 @@ public class Entreprise {
 
         int problematique = options(1, 4);
 
-        if (problematique == 1) {
-            executer_p0("|Tournée des encombrants (1 ramassage)|", 1);
-        } else if (problematique == 2) {
-            executer_p1("|Tournée des encombrants (TSP)|", 1);
-        } else if (problematique == 3) {
-            executer_p2("|Tournée des poubelles (Postier Chinois)|");
-        } else if (problematique == 4) {
-            return;
+        switch (problematique) {
+            case 1:
+                executer_p0("|Tournée des encombrants (1 ramassage)|", 1);
+                break;
+            case 2:
+                executer_p1("|Tournée des encombrants (TSP)|", 1);
+                break;
+            case 3:
+                executer_p2("|Tournée des poubelles (Postier Chinois)|");
+                break;
+            case 4:
+                return;
         }
         attente();
     }
@@ -85,6 +89,7 @@ public class Entreprise {
 
     // Méthode d'execution de la problematique une du theme 1
     private void executer_p1(String titre, int theme) {
+        // appel methodes
         affichage_titre1(theme, titre);
         int hypothese = choix_hypothese();
         int graphe_test = choix_graphe();
